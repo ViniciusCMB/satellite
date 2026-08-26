@@ -4,7 +4,7 @@ name: Refresh Helike Landing Page
 # batendo com os ciclos de release do GFS (00/06/12/18 UTC).
 #
 # - Re-roda a simulacao RocketPy (Stage 1+2+3) para a data-alvo
-#   2026-09-03 12:00 UTC (09:00 BRT)
+#   2026-09-04 12:00 UTC (09:00 BRT)
 # - Regenera os artefatos JSON/GeoJSON em docs/landing/data/
 # - Commita direto no branch atual
 #
