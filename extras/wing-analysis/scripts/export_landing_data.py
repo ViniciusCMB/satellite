@@ -6,7 +6,7 @@ Roda headless (sem display), re-executa a simulacao com GFS e gera:
   - data/trajectory_3d.json           -> Plotly trace (ascent + parachute + SRAB)
   - data/trajectory_topdown.geojson   -> Polylines vista superior (Leaflet)
 
-Target launch: 2026-09-03 09:00 BRT (UTC-03) = 2026-09-03 12:00 UTC.
+Target launch: 2026-09-04 09:00 BRT (UTC-03) = 2026-09-04 12:00 UTC.
 A simulacao e re-rodada com GFS mais recente para essa data/hora.
 
 Uso:
@@ -36,7 +36,7 @@ sys.path.insert(0, str(WING_SRC))
 LAT = -21.9430528
 LON = -48.9540861
 ELEV = 478
-LAUNCH_LOCAL_STR = "2026-09-03T09:00:00-03:00"
+LAUNCH_LOCAL_STR = "2026-09-04T09:00:00-03:00"
 LAUNCH_UTC = datetime(2026, 9, 3, 12, 0, 0, tzinfo=timezone.utc)
 
 RAIL_LENGTH = 4.0
@@ -295,7 +295,7 @@ def main():
         "atmospheric_model": {
             "type": "GFS",
             "gfs_run_date_utc": LAUNCH_UTC.strftime("%Y-%m-%d"),
-            "note": "GFS forecast for 2026-09-03 12:00 UTC. Updated every 6h (00/06/12/18Z).",
+            "note": "GFS forecast for 2026-09-04 12:00 UTC. Updated every 6h (00/06/12/18Z).",
         },
         "ascent": {
             "apogee_m_agl": apogee_agl,
