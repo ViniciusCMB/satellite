@@ -140,6 +140,9 @@ jobs:
           path: docs/landing
 
   deploy-pages:
+    # O ambiente 'github-pages' so aceita deploy da branch padrao;
+    # em PRs (outras branches), pula o deploy sem falhar o check.
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     needs: refresh
     timeout-minutes: 3
