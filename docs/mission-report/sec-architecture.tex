@@ -1,9 +1,4 @@
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{1}
-\item
-  \textbf{System Architecture and Concept of Operations}
-\end{enumerate}
+\section{System Architecture and Concept of Operations}
 
 \subsection{System Architecture}
 
@@ -11,39 +6,35 @@ Helike \#213 is a PocketQube 1P (50$\times$50$\times$50~mm, $\sim$200~g)
 whose central subsystem is the SRAB — the bioinspired autorotative
 recovery system. The satellite is organized in five functional blocks:
 
-\begin{center}
-{\small
-\setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\raggedright}p{3cm}X}
-\toprule
-\textbf{Block} & \textbf{Components} \\
-\midrule
-Recovery (SRAB) & 2 autorotative wings (Asa3), passive deployment \\
-EPS & Li-Ion 1300~mAh + BMS, RBF pin, 2 kill switches \\
-Avionics & ESP32-C3 Super Mini, single 5~Hz polling loop \\
-Sensors & BME280 (pressure/temp/humidity), ICM-20602 (6-axis IMU) \\
-Telemetry & LoRa RFM95W 915~MHz, GPS NEO-8M, SD + LittleFS \\
-\bottomrule
-\end{tabularx}
-}
-\end{center}
+\subsubsection{Mechanical Structure}
+
+The flight structure is the 1P frame donated by Alba Orbital, machined
+in aluminum with a fiber-reinforced polymer (FRP) backplate. The
+aluminum structure carries the launch vibration and ejection shock
+loads with minimum mass, and the FRP backplate provides an isolated,
+non-conductive mounting plane for the electronics stack, eliminating
+the need for additional standoffs or insulating hardware. The
+mechanical architecture follows the PocketQube 1P standard envelope,
+guaranteeing compatibility with the deployer and with the Dédalo
+launch vehicle integration. The complete assembled satellite, with
+the SRAB wings in the deployed configuration, is shown in
+Fig.~\ref{fig:satellite-assembly}.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/fig_schematic.png}
-\caption{Electrical schematic of Helike \#213 (KiCad). U1: ESP32-C3
-Super Mini; U2: LoRa RFM95W-915S2; U3: BME280; U4: ICM-20602; U5: GPS
-NEO-8M; U6: SD card module; SW1/SW2: kill switches (Z axis); SW3: RBF
-pin; J1: SMA antenna; D1/BZ1: status LED and buzzer.}
-\label{fig:schematic}
+\includegraphics[width=0.75\textwidth]{figures/Helike_complete_assy_render.JPG}
+\caption{Complete Helike \#213 assembly render: 1P Alba Orbital
+aluminum frame, FRP backplate and the two SRAB autorotative wings in
+the deployed configuration.}
+\label{fig:satellite-assembly}
 \end{figure}
 
 \subsection{Subsystem Descriptions}
 
 \subsubsection{Recovery (SRAB)}
 
-The SRAB is a passive recovery system composed of 2 autorotative wings
-(Asa3 geometry), stowed during flight and deployed by ejection. They
+The SRAB is a passive recovery system composed of 2 autorotative wings,
+stowed during flight and deployed by ejection. They
 convert the potential energy of the fall into rotational kinetic
 energy, slowing the satellite to a predicted terminal velocity of
 13.33~m/s --- the $V_F = 20/1.5$~m/s design target, applying a 1.5
@@ -53,70 +44,136 @@ depend on software at all, so it works even with total loss of the
 avionics. The two-wing configuration keeps the mechanism simple and
 light; losing a single wing is a mission-critical degradation, so the
 design relies on the robustness of the geometry and on the drop-test
-evidence accumulated across the Asa1/Asa2/Asa3 iterations.
+evidence accumulated across the tests iterations. The wing geometry
+and hub assembly used in the computational simulation and drop tests
+are shown in Fig.~\ref{fig:wing-geometry}.
 
 \subsubsection{Electrical Power System}
 
 Energy comes from a 1300~mAh Li-Ion battery protected by a BMS that
 covers overcharge, overdischarge, short-circuit and overcurrent. With
-an average draw of about 145~mA, the predicted autonomy exceeds 5~h, a
+an average draw of about 145~mA, the predicted autonomy exceeds 8~h, a
 margin of roughly two times the SCSM requirement of 4~h. Safety is
 handled by two kill switches (SW1/SW2, NC contacts wired in parallel,
 Z axis) plus the RBF pin
 (SW3), which cuts all energy when inserted. The satellite only powers
-on at ejection, keeping it independent from the rocket as required by
-REC 10.1.1.
+on at ejection.
 
 \subsubsection{Avionics and Telemetry}
 
 At the core sits an ESP32-C3 Super Mini, a single-core RISC-V
-microcontroller running a single synchronous 5~Hz polling loop, with
-no state machine and no RTOS scheduler. A BME280 measures pressure,
-temperature and humidity, and an ICM-20602 six-axis IMU adds
-acceleration and angular rate; together they feed the 5~Hz telemetry
-packet and the SRAB rotation analysis. Telemetry goes down through the
-LoRa RFM95W at 915~MHz (SF7, 125~kHz bandwidth, 20~dBm, sync word
-0xF3, CRC enabled), transmit-only, while a GPS NEO-8M records the
-post-landing position. Flight data are written to an SD card with
+microcontroller running a single synchronous 5~Hz polling loop. The
+ESP32-C3 was selected over the dual-core ESP32-S3 used in the team's
+rocket flight computers: the flight loop reads two sensors, assembles
+a telemetry packet and transmits it at 5~Hz, a workload that keeps a
+single 160~MHz RISC-V core below a few percent duty cycle. A second
+core would add idle current and cost without contributing capability,
+and the bare polling loop --- no RTOS, no preemption --- eliminates
+entire classes of concurrency faults from the recovery path. The
+integrated Wi-Fi and Bluetooth radios are kept disabled to minimize
+energy draw, leaving LoRa as the only active radio.
+
+A BME280 measures pressure, temperature and humidity, and an ICM-20602
+six-axis IMU adds acceleration and angular rate; together they feed
+the telemetry packet and the SRAB rotation analysis. The BME280 was
+chosen for the mission's energy profile: in measurement mode it draws
+~3.6~$\mu$A at a 1~Hz refresh rate, negligible against the link
+budget, and a single I2C transaction returns all three environmental
+quantities. The ICM-20602 was chosen for its low-power MEMS
+architecture; because the gyroscope measures the spin rate directly
+as a near-constant signal in steady autorotation (477~rpm at
+equilibrium), the 5~Hz telemetry rate is sufficient to estimate the
+equilibrium values without aliasing, and the 20~Hz-capable
+instrumentation was validated in bench tests (ENMC) and in the 20~m
+drop campaigns.
+
+Telemetry goes down through the LoRa RFM95W at 915~MHz, transmit-only,
+while a GPS NEO-8M records the position. The link operates at
+spreading factor SF7 with 125~kHz bandwidth, the lowest-airtime
+combination in the LoRa family: for a fixed packet size, SF7 minimizes
+on-air time, which directly reduces the energy per transmission ---
+the radio is the highest-draw component at ~120~mA during bursts ---
+and the channel occupancy, lowering collision risk with other teams on
+the 915~MHz band. Transmit-only operation removes the receiver
+entirely: there is no uplink, no in-flight command path and no remote
+attack surface, and recovery never depends on a software decision, as
+discussed in Section 1 (Filter 2).
+
+Flight data are written to an SD card with
 automatic LittleFS fallback on the internal flash, and three ground
 beacons measure RSSI for trilateration once the satellite is on the
-ground. Impact detection, the buzzer and the low-power beacon mode are
-planned for a future firmware revision and are not yet part of the
-flight software.
+ground.
+
+\subsubsection{Ground Segment: Post-Landing Recovery}
+
+The second half of the mission is the recovery of the satellite on
+the ground, performed by a ground segment composed of a LoRa receiver,
+a mesh of up to eight GPS-equipped beacons (B1--B8) and a web-based
+recovery dashboard. The receiver and the beacons use the same hardware
+as the satellite's radio front end (ESP32-C3 + RFM95W + NEO-8M), which
+allows any beacon to be promoted to receiver and vice versa. All nodes
+listen to the 915~MHz link in continuous RX mode: the receiver is the
+single point that connects to the recovery dashboard over USB serial,
+while each beacon additionally transmits a compact report
+(\#B1..\#B8, 11 fields) containing its own GPS position and the RSSI
+of the last satellite packet it heard, with a random anti-collision
+jitter of 15--120~ms between reports.
+
+The receiver correlates the reports through a synchronization basket
+indexed by the satellite's packet counter: when three or more
+listeners (receiver plus beacons) report RSSI for the \emph{same}
+satellite packet, the ground segment computes a corrected ground
+position by RSSI trilateration. The slant range to each listener is
+estimated with the log-distance model
+$r_i = 10^{(\mathrm{TX\_POWER} - \mathrm{RSSI}_i)/(10 n)}$ with
+$n = 2.0$ and $\mathrm{TX\_POWER} = 20$~dBm, then projected onto the
+ground using the satellite's own barometric altitude
+($d_i = \sqrt{r_i^2 - h^2}$); a 2D least-squares fit over the
+listeners yields the corrected latitude/longitude. A Monte Carlo
+analysis of the estimator (using the same formula implemented in
+firmware) shows a median error of 134~m at $\pm1$~dB RSSI noise (P95
+309~m) and 268~m at $\pm2$~dB (P95 744~m) --- a coarse refinement
+that complements, rather than replaces, the satellite's own GPS fix.
+The correction is only applied when the residual of the least-squares
+fit stays below 1500~m, a gate well above the P95 error at $\pm2$~dB
+that suppresses catastrophic outliers; otherwise the raw satellite GPS
+position is emitted. The resulting packet stream is presented in a web
+dashboard (Flask + WebSocket + Leaflet map) that shows the satellite's
+live position, the beacon mesh status and the RSSI history in real
+time, and logs every packet to CSV for post-mission analysis.
 
 \subsection{Concept of Operations}
 
 From a technology-development standpoint, the ConOps doubles as the
 flight-test plan for the SRAB: each arc exercises one stage of the
 recovery system --- powered-off safety while stowed (SAFE), ejection
-and power-on (BOOST), passive deployment and autorotation (DESCENT),
+and power-on (DEPLOY), passive deployment and autorotation (DESCENT),
 and ground location (POST-LANDING) --- and the descent telemetry is
 the primary evidence for validating the aerodynamic model against
 real flight data.
 
 The satellite's behavior follows the physical flight profile in four
-arcs, and the firmware mirrors them through a single polling loop
-rather than a phase-detecting state machine. The first arc is
-\emph{inert}: the satellite starts in SAFE, with the kill switches and
+arcs. The first arc is \emph{inert}: the satellite starts in SAFE, with the kill switches and
 the RBF pin inserted, and stays completely powered off until ejection.
 The second arc begins at \emph{ejection}: the satellite powers on,
-initializes the sensors and attempts a first GPS fix, then samples and
-transmits through the boost and coast phases while the rocket climbs
-toward apogee. The third arc is the \emph{descent}: at apogee the
+initializes the sensors and attempts a first GPS fix. 
+The third arc is the \emph{descent}: at apogee the
 satellite leaves the rocket, the two SRAB wings deploy passively ---
 no actuator, no command required --- and the descent is governed
-entirely by autorotation while the 5~Hz telemetry packet streams
-rotation rate, descent velocity and the monitored Launch Readiness
-Review parameters. The fourth arc is \emph{post-landing}: impact
-detection, the buzzer and a low-power beacon mode are planned for a
-future firmware revision; the current firmware simply keeps
+entirely by autorotation while the telemetry packet streams
+rotation rate, descent velocity. The fourth arc is \emph{post-landing}: impact
+detection, the current firmware simply keeps
 transmitting periodic packets with RSSI and GPS position until the
-battery is exhausted or the recovery team arrives.
+battery is exhausted or the recovery team arrives. This final arc is
+the second half of the mission: the ground segment --- the LoRa
+receiver and the beacon mesh described in Section 2.3 --- converts the
+satellite's post-landing packets into an accurate ground position,
+driving the team directly to the landing point.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/fig_asa3_geometry.png}
-\caption{SRAB wing geometry views (Asa3): three orthogonal projections
+\caption{SRAB wing geometry views: three orthogonal projections
 of the wing + hub assembly used in the computational simulation and
 drop tests.}
 \label{fig:wing-geometry}

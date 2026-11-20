@@ -1,0 +1,66 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. INTRODUÇÃO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{INTRODUÇÃO}
+
+O regulamento da \textit{Latin American Space Challenge} (LASC) exige que os sistemas de recuperação de nanossatélites mantenham a descida controlada entre 20~m/s e 45~m/s \citep{lasc2026}. Embora comuns, os paraquedas apresentam pontos únicos de falha associados a costuras, dobraduras e mecanismos de acionamento. Como alternativa puramente passiva, este trabalho propõe o Sistema de Recuperação Auto Rotativo Bioinspirado (SRAB), inspirado na mecânica de voo de sementes de samara (\textit{Acer rubrum}, \textit{Fraxinus}). A assimetria estrutural dessas sementes induz uma rotação cônica estável, gerando Vórtices de Bordo de Ataque (LEV) que ampliam significativamente a sustentação sem o uso de atuadores \citep{lentink2009, mcconnell2023}.
+
+Os objetivos específicos desta pesquisa são: (a) validar qualitativamente o modelo dinâmico de 4$^{\underline{a}}$ ordem do SRAB via ensaios de queda com protótipos iterativos (Testes 1 e 2); (b) projetar e validar a instrumentação embarcada para telemetria a 20~Hz (Teste 3 -- Parte B); (c) simular a configuração Asa3 (4 asas) em altitude operacional, incluindo análise de dispersão via Monte Carlo (Teste 3 -- Parte A); (d) conduzir análise de sensibilidade dos coeficientes aerodinâmicos no regime estacionário; e (e) comparar o desempenho do SRAB com o de um paraquedas equivalente.
+
+O escopo delimita-se à demonstração de viabilidade física e à validação preliminar conceitual. O estudo não visa esgotar a caracterização quantitativa do regime terminal, mas estabelecer uma base teórica e instrumental robusta para futuras investigações e testes de lançamento em altitude operacional.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2. FUNDAMENTAÇÃO TEÓRICA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{FUNDAMENTAÇÃO TEÓRICA}
+
+Esta seção fundamenta o projeto do SRAB, abordando o mecanismo de autorrotação passiva das sementes de samara, o Vórtice de Bordo de Ataque (LEV) e os modelos matemáticos de aerodinâmica e dinâmica do sistema.
+
+\subsection{Autorrotação passiva em sementes de samara}
+
+Sementes do tipo \textit{samara} são estruturas aladas cuja assimetria estrutural induz rotação estável em torno do eixo vertical ao caírem \citep{limacher2015}. Essa autorrotação passiva gera sustentação, reduz a velocidade terminal e favorece a dispersão horizontal, descrita pela relação \citep{limacher2015}:
+\begin{equation}
+x_h = h \cdot \frac{v_w}{v_s}
+\end{equation}
+A cinemática de equilíbrio é caracterizada por dois parâmetros adimensionais: o número de Reynolds ($Re$) e a razão de velocidade de ponta ($\lambda$) \citep{limacher2015}:
+\begin{equation}
+\lambda = \frac{\Omega \, R_d}{v_0}
+\qquad
+Re = \frac{c\,\sqrt{v_0^2 + (\Omega R_d)^2}}{\nu}
+\end{equation}
+A estabilidade longitudinal é mantida com um ângulo de conicidade $\beta$ entre 13$^{\circ}$ e 35$^{\circ}$, e o centro de massa posicionado entre 27\% e 35\% da corda a partir do bordo de ataque \citep{limacher2015}.
+
+\subsection{Vórtice de bordo de ataque (LEV)}
+
+O mecanismo aerodinâmico central da autorrotação é o Vórtice de Bordo de Ataque (\textit{Leading-Edge Vortex}, LEV). Ao contrário das asas convencionais, que sofrem \textit{estol} em altos ângulos de ataque, a rotação mantém o escoamento no extradorso aderido \citep{lentink2009, rezgui2020}.
+
+Lentink et al. \citeyear{lentink2009} mostraram que o escoamento radial (\textit{spanwise flow}) drena a vorticidade para a ponta da asa, estabilizando a estrutura do LEV. Isso resulta em coeficientes de sustentação locais excepcionais na região basal (entre 2 e 5), superando amplamente o limite de \textit{estol} \citep{lentink2009, mcconnell2023}.
+
+\subsection{Modelo de sustentação sectional do LEV}
+
+Para incorporar o efeito do LEV, Rezgui et al. \citeyear{rezgui2020} adaptaram o método de Polhamus. Assumindo a sustentação total como a soma das componentes potencial e vortex, a expressão sectional torna-se:
+\begin{equation}
+C_l(\alpha) = K_p \sin(\alpha) \cos^2(\alpha) + K_v \cos(\alpha) \sin^2(\alpha)
+\end{equation}
+A polar resultante apresenta sustentação superior à do escoamento potencial, atingindo máximos próximos a $\alpha \approx 45^{\circ}$. Uma correção bidimensional via teoria de Prandtl pode ser aplicada para converter a polar 3-D em coeficiente seccional local \citep{rezgui2020}.
+
+\subsection{Modelo de Elemento de Pá (BEM) e dinâmica do SRAB}
+
+No SRAB, as forças aerodinâmicas são calculadas pela Teoria do Elemento de Pá (BEM). As forças elementares de sustentação ($\delta L$) e arrasto ($\delta D$) seguem a polar de Polhamus:
+\begin{equation}
+\delta L = \frac{1}{2} \rho \, U^2 \, c \, \delta r \, C_l(\alpha)
+\qquad
+\delta D = \frac{1}{2} \rho \, U^2 \, c \, \delta r \, C_d
+\end{equation}
+McConnell e Das \citeyear{mcconnell2023} descrevem a dinâmica dessas sementes por um modelo de 4$^{\underline{a}}$ ordem, cujo vetor de estado engloba o ângulo de conicidade ($\theta$), as taxas de arfagem ($\dot\theta$) e guinada ($\dot\phi$), e a velocidade de descida ($v_0$):
+\begin{equation}
+\ddot\theta = -\frac{M_{y3}}{I_{y3y3}} - \dot\phi^2 \sin\theta \cos\theta
+\qquad
+\ddot\phi = \frac{M_{z3}}{I_{y3y3} \cos\theta} + 2\,\dot\phi\,\dot\theta \tan\theta
+\end{equation}
+\begin{equation}
+\dot{v}_0 = -g + \frac{F_{z3} \cos\theta}{m}
+\end{equation}
+As equações de Newton-Euler capturam o momento de restauração cônica e o acoplamento giroscópico típicos da autorrotação. A baixa inércia do SRAB permite rápido reajuste frente a rajadas, mantendo a estabilidade dinâmica do sistema \citep{limacher2015, mcconnell2023}.

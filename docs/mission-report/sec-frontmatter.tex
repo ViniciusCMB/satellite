@@ -1,120 +1,76 @@
-\textbf{Abstract}
+\section*{Abstract}
 
-This report presents the development of the Helike \#213 1P PocketQube
-satellite, designed by team Serra Rocketry (IPRJ-UERJ) for the
-Satellite Challenge category of the 7th Latin American Space Challenge
-(LASC 2026). The mission's central element is the SRAB (Bioinspired
-Autorotative Recovery System, from the Portuguese \textit{Sistema de Recuperação
-Autorrotativo Bioinspirado}) --- a passive, parachute-free recovery
-mechanism based on the autorotation of samara (maple) seeds, which
-offers predictable, modelable aerodynamic behavior without the
-electromechanical sequencers, pyrotechnics and tangled lines that make
-conventional parachutes fail. The satellite also carries a LoRa
-communication system with RSSI trilateration from three ground
-beacons, which helps locate the satellite after landing and supports
-recovery rather than being the mission's main objective. The report
-walks through the system architecture and concept of operations, the
-physics of samara autorotation, three drop-test campaigns, and the
-mathematical modeling and computational simulation of the descent from
-the apogee of the team's Dédalo launch vehicle, validated with
-RocketPy --- closing with the risk analysis (P $\times$ S matrix) and the pre-flight
-validation plan.
+Helike \#213 is a 1P PocketQube satellite developed by Serra Rocketry
+(IPRJ-UERJ) for the 7th Latin American Space Challenge (LASC 2026).
+Its central subsystem is the SRAB (Bioinspired Autorotative Recovery
+System) --- a passive, parachute-free recovery mechanism inspired by
+samara seed autorotation that eliminates the electromechanical
+sequencers and pyrotechnics responsible for conventional parachute
+failures. Three iterative simulation-and-test campaigns validated the
+aerodynamic model, and the full descent from the Dédalo launch vehicle
+apogee (1520.5~m AGL) was simulated with RocketPy under real GFS
+conditions, predicting a terminal velocity of 13.33~m/s with a 1.5
+safety factor over the LASC 20~m/s limit. A LoRa telemetry link with
+RSSI trilateration supports post-landing recovery.
 
-\textbf{Authors}
+\section*{Authors}
+\noindent Vinicius Carvalho Monnerat Bandeira. \emph{Serra Rocketry, Instituto
+Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570,
+Brazil.}
 
-Diego dos Santos Alves. \emph{Serra Rocketry, Instituto Politécnico da UERJ
+\noindent João Victor Domingues Barizon de Mello. \emph{Serra Rocketry, Instituto
+Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570,
+Brazil.}
+
+\noindent Pablo Alves Mattos Borges. \emph{Serra Rocketry, Instituto Politécnico da
+UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
+
+\noindent Pedro Henrique Couto Silva. \emph{Serra Rocketry, Instituto Politécnico da
+UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
+
+\noindent Caio Phelipe Souza De Lima. \emph{Serra Rocketry, Instituto Politécnico da
+UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
+
+\noindent Diego dos Santos Alves. \emph{Serra Rocketry, Instituto Politécnico da UERJ
 (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
 
-Pedro Henrique Couto Silva. \emph{Serra Rocketry, Instituto Politécnico da
-UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
-
-Vinicius Carvalho Monnerat Bandeira. \emph{Serra Rocketry, Instituto
-Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570,
-Brazil.}
-
-Caio Phelipe Souza De Lima. \emph{Serra Rocketry, Instituto Politécnico da
-UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
-
-João Victor Domingues Barizon de Mello. \emph{Serra Rocketry, Instituto
-Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570,
-Brazil.}
-
-Pablo Alves Mattos Borges. \emph{Serra Rocketry, Instituto Politécnico da
-UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
-
-Angelo Mondaini Calvão. \emph{Instituto Politécnico da UERJ (IPRJ-UERJ),
-Nova Friburgo, Rio de Janeiro, 28625-570, Brazil.}
-
-Eustáquio de Souza Baêta Júnior. \emph{Universidade do Estado do Rio de
-Janeiro (UERJ), Faculdade de Engenharia, Programa de Pós-Graduação em
-Engenharia Mecânica, Rio de Janeiro, 20550-013, Brazil.}
-
-Letícia dos Santos Aguilera. \emph{Universidade do Estado do Rio de Janeiro
-(UERJ), Instituto Politécnico (IPRJ), Programa de Pós-Graduação em Ciência
-e Tecnologia de Materiais, Nova Friburgo, Rio de Janeiro, 28625-570,
-Brazil.}
-
-\textbf{Nomenclature}
-
-\emph{BMS} = Battery Management System
-
-\emph{BEM} = Blade Element Method
-
-\emph{ConOps} = Concept of Operations
-
-\emph{EPS} = Electrical Power System
-
-\emph{FMECA} = Failure Mode, Effects, and Criticality Analysis
-
-\emph{GPS} = Global Positioning System
-
-\emph{IMU} = Inertial Measurement Unit
-
-\emph{LASC} = Latin American Space Challenge
-
-\emph{LEV} = Leading-Edge Vortex
-
-\emph{LoRa} = Long Range wireless communication protocol
-
-\emph{MCU} = Microcontroller Unit
-
-\emph{PQB} = PocketQube
-
-\emph{RBF} = Remove Before Flight
-
-\emph{RSSI} = Received Signal Strength Indicator
-
-\emph{SCSM} = Satellite Challenge Standards Manual
-
-\emph{SRAB} = Sistema de Recuperação Autorrotativo Bioinspirado
-(Bioinspired Autorotative Recovery System)
-
-\emph{$\theta$} = conicity angle
-
-\emph{$\dot{\phi}$} = rotor spin rate
-
-\emph{$C_L$} = lift coefficient
-
-\emph{$C_D$} = drag coefficient
-
-\emph{$C_{D0}$} = parasitic (flat-plate) drag coefficient
-
-\emph{$\alpha$} = local angle of attack
-
-\emph{$\rho$} = air density
-
-\emph{$v_0$} = vertical descent velocity
-
-\emph{$r$} = radial position along the wing
-
-\emph{$U$} = local resultant airspeed
-
-\emph{$V_F$} = impact (terminal) velocity
-
-\emph{$FS$} = safety factor
-
-\emph{$R$} = risk score ($R = P \times S$)
-
-\emph{$P$} = failure probability
-
-\emph{$S$} = failure severity
+% ==========================================
+% NOMENCLATURE
+% ==========================================
+\section*{Nomenclature}
+\bgroup\def\arraystretch{1.2}
+\begin{tabular}{@{}p{0.1\linewidth}p{0.85\linewidth}@{}}
+BMS & = Battery Management System \\
+BEM & = Blade Element Method \\
+ConOps & = Concept of Operations \\
+EPS & = Electrical Power System \\
+FMECA & = Failure Mode, Effects, and Criticality Analysis \\
+GPS & = Global Positioning System \\
+IMU & = Inertial Measurement Unit \\
+LASC & = Latin American Space Challenge \\
+LEV & = Leading-Edge Vortex \\
+LoRa & = Long Range wireless communication protocol \\
+MCU & = Microcontroller Unit \\
+PQB & = PocketQube \\
+RBF & = Remove Before Flight \\
+RSSI & = Received Signal Strength Indicator \\
+SCSM & = Satellite Challenge Standards Manual \\
+RTOS & = Real-Time Operating System \\
+SRAB & = Sistema de Recuperação Autorrotativo Bioinspirado (Bioinspired Autorotative Recovery System) \\
+$\theta$ & = conicity angle \\
+$\dot{\phi}$ & = rotor spin rate \\
+$C_L$ & = lift coefficient \\
+$C_D$ & = drag coefficient \\
+$C_{D0}$ & = parasitic (flat-plate) drag coefficient \\
+$\alpha$ & = local angle of attack \\
+$\rho$ & = air density \\
+$v_0$ & = vertical descent velocity \\
+$r$ & = radial position along the wing \\
+$U$ & = local resultant airspeed \\
+$V_F$ & = impact (terminal) velocity \\
+$SF$ & = safety factor \\
+$R$ & = risk score ($R = P \times S$) \\
+$P$ & = failure probability \\
+$S$ & = failure severity \\
+\end{tabular}
+\egroup

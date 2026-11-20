@@ -1,83 +1,88 @@
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{2}
-\item
-  \textbf{Weights, Measures, and Performance Data}
-\end{enumerate}
+\section{Weights, Measures, and Performance Data}
 
 \subsection{Physical Characteristics}
 
-\begin{center}
+The principal physical characteristics of the satellite are listed in
+Table~\ref{tab:physical}.
+
+\begin{table}[htbp]
+\centering
 {\small
 \setlength{\tabcolsep}{6pt}
 \begin{tabular}{>{\raggedright}p{5.2cm}l}
 \toprule
 \textbf{Parameter} & \textbf{Value} \\
 \midrule
-Form factor & PocketQube 1P (50$\times$50$\times$50 mm) \\
-Mass (estimated) & $\sim$200 g \\
-Stowed frontal area & $\sim$25 cm$^2$ \\
-Deployed frontal area (SRAB) & $\sim$147 cm$^2$ \\
-SRAB wing area & $\sim$122 cm$^2$ (4 wings, Asa2 geometry) \\
+Form factor & PocketQube 1P (50$\times$50$\times$50~mm) \\
+Mass & $\sim$200~g \\
+Stowed frontal area & $\sim$25~cm$^2$ \\
+Deployed frontal area (SRAB, 2-wing) & $\sim$56~cm$^2$ \\
 \bottomrule
 \end{tabular}
+\caption{SRAB physical parameters.}\label{tab:physical}
 }
-\end{center}
-
-% TODO: fill measured mass after final integration; the 200 g figure
-% is the current estimate used in the SRAB simulation.
+\end{table}
 
 \subsection{Recovery Performance}
 
-The SRAB recovery performance was evaluated through two drop-test
-campaigns and computational simulation (Section 4):
+The SRAB recovery performance was evaluated through three iterative simulation-and-test
+campaigns and computational simulation (Section 4). The consolidated
+recovery performance data are summarized in Table~\ref{tab:recovery}:
 
-\begin{center}
+\begin{table}[htbp]
+\centering
 {\small
 \setlength{\tabcolsep}{6pt}
 \begin{tabular}{>{\raggedright}p{5.2cm}l}
 \toprule
 \textbf{Parameter} & \textbf{Value} \\
 \midrule
-Terminal velocity (predicted, Test 2) & 10.05 m/s \\
-Rotation rate (Test 2) & 439 rpm \\
-Cone angle (Test 2) & 11.9$^{\circ}$ \\
-SCSM regulatory range & 20--45 m/s \\
-Margin vs. lower bound & 50\% below \\
-Impact energy dissipated by autorotation & 99.5\% \\
-REC 10.2.1 notification (non-parachute) & Sent \\
+Terminal velocity (final, Asa3 2-wing) & 13.33~m/s (simulated from real apogee) \\
+Impact velocity (Test 2, 20~m drop, Asa2) & 8.04~m/s \\
+Rotation rate (Test 2, Asa2) & 306.9~rpm \\
+Cone angle (Test 2, Asa2) & 24.4$^{\circ}$ \\
+LASC descent criterion & $V_F = 13.33$~m/s (20 m/s / SF 1.5) \\
+Impact energy dissipated by autorotation & 99.15\% \\
+REC 10.2.1 notification (non-parachute) & Sent (1st + 4th Progress Updates, email) \\
 \bottomrule
 \end{tabular}
-}
-\end{center}
+\caption{SRAB recovery performance data.}
+\label{tab:recovery}
 
-% TODO: update terminal velocity to the final selected configuration
-% (Asa3, 2 wings) once the quantitative drop test (Test 4, ~200 m) is
-% performed. The computational model currently predicts ~20 m/s for the
-% Asa3 2-wing configuration, within the SCSM 20-45 m/s range.
+}
+\end{table}
 
 \subsection{Power and Autonomy}
 
-\begin{center}
+The power budget and predicted autonomy are presented in
+Table~\ref{tab:power}:
+
+\begin{table}[htbp]
+\centering
 {\small
 \setlength{\tabcolsep}{6pt}
 \begin{tabular}{>{\raggedright}p{5.2cm}l}
 \toprule
 \textbf{Parameter} & \textbf{Value} \\
 \midrule
-Battery & Li-Ion 6000 mAh \\
-Average current draw & $\sim$145 mA \\
-Predicted autonomy & $>$40 h \\
-SCSM requirement & $\geq$4 h \\
-Margin & $>$10$\times$ \\
+Battery & Li-Ion 1300~mAh \\
+Average current draw & $\sim$145~mA \\
+Predicted autonomy & $>$8~h \\
+SCSM requirement & $\geq$4~h \\
+Margin & $\approx 2\times$ \\
 \bottomrule
 \end{tabular}
+\caption{Power budget and predicted autonomy.}\label{tab:power}
 }
-\end{center}
+\end{table}
 
 \subsection{Flight Sensors}
 
-\begin{center}
+The flight sensors and their measurements are listed in
+Table~\ref{tab:sensors}:
+
+\begin{table}[htbp]
+\centering
 {\small
 \setlength{\tabcolsep}{6pt}
 \begin{tabular}{>{\raggedright}p{3.2cm}ll}
@@ -87,11 +92,12 @@ Margin & $>$10$\times$ \\
 ICM-20602 & 6-axis IMU & acceleration + angular rate \\
 BME280 & Environmental & pressure, temperature, humidity \\
 NEO-8M & GPS & position, velocity, time \\
-RFM95W & LoRa radio & 915 MHz telemetry link \\
+RFM95W & LoRa radio & 915~MHz telemetry link \\
 \bottomrule
 \end{tabular}
+\caption{Flight sensors and measurements.}\label{tab:sensors}
 }
-\end{center}
+\end{table}
 
 % TODO: add measured mass, measured current draw and final autonomy
 % bench test results (with 20% margin evidence) as they become

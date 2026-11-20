@@ -14,3 +14,7 @@ missfont.log
 
 # Keep the compiled PDF (useful for review) but ignore everything else
 !*.pdf
+
+# Artefatos de teste e slides de apresentacao
+test_tab*.pdf
+213_Presentation Session Slides.pdf

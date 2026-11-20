@@ -35,7 +35,7 @@ wing = PocketQubeSamaraWing(
 
 print(f"  Wings: {wing.n_wings}, Radius: {wing.radius*100:.2f} cm")
 
-LAT, LON, ELEV = -21.9430528, -48.9540861, 600
+LAT, LON, ELEV = -21.942472, -48.952111, 478
 env = Environment(latitude=LAT, longitude=LON, elevation=ELEV)
 env.set_date(datetime.now() + timedelta(days=1))
 env.set_atmospheric_model(type="forecast", file="GFS")

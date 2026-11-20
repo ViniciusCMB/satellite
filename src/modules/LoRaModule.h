@@ -43,6 +43,7 @@ public:
 
 private:
     bool _ready;
+    uint8_t readReg(uint8_t reg);
 };
 
 #endif // LORA_MODULE_H

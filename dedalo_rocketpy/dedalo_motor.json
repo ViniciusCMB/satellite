@@ -1,0 +1,16 @@
+{
+"dry_mass": 1.86,
+"dry_inertia": [0.04718349,0.04718349,0.00178498],
+"nozzle_radius": 0.020715,
+"grain_number": 3,
+"grain_density": 1750,
+"grain_outer_radius": 0.0315,
+"grain_initial_inner_radius": 0.015,
+"grain_initial_height": 0.100,
+"grain_separation": 0,
+"grains_center_of_mass_position": 0.174,
+"center_of_dry_mass_position": 0.24,
+"nozzle_position": 0.0,
+"throat_radius": 0.008,
+"coordinate_system_orientation": "nozzle_to_combustion_chamber"
+}

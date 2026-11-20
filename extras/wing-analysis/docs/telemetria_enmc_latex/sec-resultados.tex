@@ -1,0 +1,190 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 4. RESULTADOS E DISCUSSÃO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{RESULTADOS E DISCUSSÃO}
+
+A Tabela~\ref{tab:resumo} resume os parâmetros de simulação para todos os testes.
+
+\begin{table}[htbp]
+\caption{Resumo dos parâmetros de simulação.}
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc}
+\hline
+Parâmetro & Teste 1 & Teste 2 & Teste 3 & MC \\
+\hline
+DXF & asa1.dxf & Asa2.DXF & Asa3.DXF & Asa3.DXF \\
+$n_{wings}$ & 4 & 4 & 4 & 4 \\
+Massa [g] & 200 & 200 & 200 & 200 $\pm$ 10 \\
+$\beta$ [$^\circ$] & 8 & 8 & 3 & 3 $\pm$ 0,5 \\
+$C_{D0}$ & 1,0 & 1,0 & 1,0 & 1,0 $\pm$ 0,10 \\
+$f_{factor}$ & 0,3 & 0,3 & 0,3 & 0,3 $\pm$ 0,03 \\
+$\rho$ [kg/m$^3$] & 1,225 & 1,225 & 1,225 & 1,225 \\
+Altitude [m] & 20 & 20 & 1000 & 1000 \\
+Iterações & 1 & 1 & 1 & 200 \\
+\hline
+\end{tabular*}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{tab:resumo}
+\end{table}
+
+\subsection{Validação qualitativa (Testes 1 e 2)}
+
+As Figuras~\ref{fig:test1_lrr} a~\ref{fig:test2_lrr} e a Tabela~\ref{tab:testes12} detalham os \textit{dashboards} LRR (\textit{Launch Readiness Review}) e os parâmetros simulados dos Testes 1 e 2. A comparação revela a não linearidade entre área aerodinâmica e torque restaurador: um acréscimo de apenas 12\% na área ampliou a conicidade de impacto em 81,6\% (de 13,46$^\circ$ para 24,44$^\circ$). Isso corrobora o modelo BEM, no qual o momento $M_{y3}$ escala com o quadrado da corda local.
+
+A taxa de rotação inalterada ($\approx 306,8$~RPM) indica que a velocidade angular de equilíbrio é governada majoritariamente pelo ângulo de passo $\beta$ e pela distribuição de massa, sendo insensível à variação da área total. Por fim, o aumento de 40,5\% no número de Reynolds médio reflete a maior velocidade do Teste 2 (8,04~m/s ante 7,68~m/s), aproximando o escoamento do regime transicional turbulento, o que favorece a estabilidade do LEV \citep{rezgui2020}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_test1_lrr.png}
+\caption{LRR do Teste 1 (Asa1, 4 asas, 200~g).}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{fig:test1_lrr}
+\end{figure}
+
+% \begin{figure}[htbp]
+% \centering
+% \includegraphics[width=0.85\textwidth]{fig_test1_geom.png}
+% \caption{Vistas geométricas do Teste 1 (Asa1).}
+% {\footnotesize\centering Fonte: Autores (2026)\par}
+% \label{fig:test1_geom}
+% \end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_test2_lrr.png}
+\caption{LRR do Teste 2 (Asa2, 4 asas, 200~g).}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{fig:test2_lrr}
+\end{figure}
+
+% \begin{figure}[htbp]
+% \centering
+% \includegraphics[width=0.85\textwidth]{fig_test2_geom.png}
+% \caption{Vistas geométricas do Teste 2 (Asa2).}
+% {\footnotesize\centering Fonte: Autores (2026)\par}
+% \label{fig:test2_geom}
+% \end{figure}
+
+\subsection{Simulação em altitude operacional (Teste 3)}
+
+A Tabela~\ref{tab:test3} e as Figuras~\ref{fig:test3_lrr} e~\ref{fig:test3_geom} detalham os resultados e vistas da configuração Asa3.DXF (4 asas) simulada a 1000~m. O sistema atinge velocidade de impacto de 12,90~m/s, conicidade de equilíbrio de 17,22$^\circ$ e taxa de rotação de 372~RPM.
+
+\begin{table}[htbp]
+\caption{Resultados da simulação computacional para o Teste 3 (Asa3, 4 asas).}
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lc}
+\hline
+Parâmetro & Valor \\
+\hline
+Geometria & Asa3.DXF, 4 asas \\
+Massa total [g] & 200 \\
+Velocidade de impacto [m/s] & 12,90 \\
+ Tempo de descida [s] & 78,03 \\
+Conicidade $\theta$ de equilíbrio [$^\circ$] & 17,22 \\
+Taxa de rotação [RPM] & 371,98 \\
+Energia cinética final [J] & 16,65 \\
+Energia potencial inicial [J] & 1962,00 \\
+Energia dissipada [J] (\%) & 1945,35 (99,15\%) \\
+\hline
+\end{tabular*}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{tab:test3}
+\end{table}
+
+A análise dinâmica destaca três aspectos: (1) a alta dissipação energética (99,15\%), restando apenas 16,65~J de energia cinética no impacto; (2) a redução da conicidade ante o Teste 2 (de 24,44$^\circ$ para 17,22$^\circ$), explicada pela diminuição do ângulo de passo $\beta$ (de 8$^\circ$ para 3$^\circ$); e (3) o tempo de voo de 78,03~s (taxa média de 12,82~m/s), atestando a rápida convergência à velocidade terminal.
+
+Embora a velocidade final (12,90~m/s) situe-se abaixo da janela regulatória LASC (20--45~m/s), o conceito autorrotativo permanece válido, demandando apenas ajustes geométricos para o pleno enquadramento aos requisitos operacionais.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_test3_lrr.png}
+\caption{LRR do Teste 3 (Asa3, 4 asas, 200~g). Velocidade de impacto de 12,90~m/s com conicidade de 17,22$^\circ$.}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{fig:test3_lrr}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_test3_geom.png}
+\caption{Vistas geométricas do Teste 3 (Asa3, 4 asas).}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{fig:test3_geom}
+\end{figure}
+
+\subsection{Análise de sensibilidade do parâmetro $C_{D0}$}
+
+A Tabela~\ref{tab:cd0} detalha a análise de sensibilidade variando $C_{D0}$ em $\pm10\%$ e $\pm20\%$ ante o valor calibrado ($C_{D0}=1,0$), mantendo fixos os demais parâmetros (Asa3.DXF, 4 asas, 200~g, $\beta=3^\circ$, altitude de 1000~m, $\rho=1,225$~kg/m$^3$, $f_{factor}=0,3$).
+
+\begin{table}[htbp]
+\caption{Análise de sensibilidade de $C_{D0}$ para a configuração Asa3 com 4 asas.}
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccc}
+\hline
+$C_{D0}$ & Variação & Velocidade de Impacto [m/s] & Energia Cinética [J] \\
+\hline
+0,8 & $-$20\% & 12,90 & 16,65 \\
+0,9 & $-$10\% & 12,90 & 16,65 \\
+1,0 & nominal & 12,90 & 16,65 \\
+1,1 & +10\% & 12,90 & 16,65 \\
+1,2 & +20\% & 12,90 & 16,65 \\
+\hline
+\end{tabular*}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{tab:cd0}
+\end{table}
+
+A velocidade de impacto manteve-se inalterada na faixa testada, evidenciando que a sustentação aerodinâmica — e não o arrasto basal — é o mecanismo dominante na autorrotação. Esse comportamento corrobora a física do LEV: ao se estabelecer, a sustentação do vórtice sobrepuja fortemente o arrasto de forma, tornando o sistema robusto a variações de rugosidade superficial ou do perfil. Assim, embora o $C_{D0}$ seja relevante na aceleração inicial, ele perde influência assim que o regime cônico-estacionário é atingido.
+
+\subsection{Análise de robustez Monte Carlo (Teste 3)}
+
+Para quantificar a dispersão esperada, conduziu-se análise Monte Carlo com 200 iterações, variando simultaneamente a massa total (200~$\pm$~10~g), o ângulo de passo $\beta$ (3,0$^\circ$~$\pm$~0,5$^\circ$), $C_{D0}$ (1,0~$\pm$~0,10) e $f_{factor}$ (0,3~$\pm$~0,03). Os intervalos foram definidos com base nas tolerâncias de fabricação estimadas para impressão PETG a 0,6~mm ($\beta$ e $f_{factor}$), na faixa de calibração observada nos Testes 1 e 2 ($C_{D0}$) e na margem regulatória de massa do padrão PocketQube 1P. A Tabela~\ref{tab:mc} sumariza os resultados.
+
+\begin{table}[htbp]
+\caption{Resultados da análise Monte Carlo para a configuração Asa3 com 4 asas (200 iterações).}
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccc}
+\hline
+Métrica & Média $\pm$ $\sigma$ & P5 & P95 \\
+\hline
+Velocidade de impacto & 12,89 $\pm$ 0,20~m/s & 12,54~m/s & 13,19~m/s \\
+Tempo de descida & 78,23 $\pm$ 1,22~s & 76,46~s & 80,38~s \\
+Conicidade $\theta_{eq}$ & 17,48$^\circ$ $\pm$ 1,19$^\circ$ & 15,71$^\circ$ & 19,50$^\circ$ \\
+Spin de equilíbrio & 371 $\pm$ 8~RPM & 358~RPM & 384~RPM \\
+Energia de impacto & 16,54 $\pm$ 1,19~J & 14,40~J & 18,30~J \\
+\hline
+\end{tabular*}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{tab:mc}
+\end{table}
+
+A velocidade de impacto apresenta baixa dispersão ($\sigma = 0,20$~m/s, CV~$<$~2\%), confirmando que o regime de autorrotação estável atua como um controlador aerodinâmico natural que rejeita perturbações paramétricas. Essa robustez decorre do fato de que a velocidade terminal no regime de autorrotação é determinada primariamente pela geometria das asas e pela massa total, com influência secundária dos parâmetros fenomenológicos calibrados.
+
+\subsection{Comparativo SRAB vs paraquedas}
+
+A Tabela~\ref{tab:benchmark} compara o SRAB (Asa3, 4 asas, 200~g) com um paraquedas \textit{flat circular} ($\varnothing$200~mm, $C_D = 1,5$), partindo de 1000~m. O SRAB apresenta velocidade de impacto 1,6$\times$ maior (12,90~m/s contra 8,25~m/s) e tempo de descida 34\% menor (78,03~s contra 118,33~s). Essa diferença ocorre porque o paraquedas dissipa energia exclusivamente por arrasto de forma, enquanto o SRAB combina arrasto e sustentação para viabilizar a autorrotação.
+
+Apesar da maior velocidade, o SRAB oferece três vantagens significativas: (1) ausência de mecanismos complexos de acionamento (molas, pirotecnia), mitigando fontes clássicas de falha; (2) eliminação de pontos únicos de falha estrutural, como linhas e costuras; e (3) menor tempo de voo, o que minimiza a deriva por ventos cruzados e restringe o raio de dispersão no pouso.
+
+\begin{table}[htbp]
+\caption{Comparativo SRAB vs Paraquedas.}
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcc}
+\hline
+Parâmetro & SRAB (4 asas) & Paraquedas ($\varnothing$200~mm) \\
+\hline
+Massa total [g] & 200 & 200 \\
+Velocidade de impacto [m/s] & 12,90 & 8,25 \\
+Tempo de descida [s] & 78,03 & 118,33 \\
+Energia de impacto [J] & 16,65 & 6,80 \\
+Abaixo do limite LASC (45~m/s) & Sim & Sim \\
+Dentro da janela LASC (20--45~m/s) & Não & Não \\
+\hline
+\end{tabular*}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{tab:benchmark}
+\end{table}
+
+\subsection{Limitações e trabalhos futuros}
+
+Os Testes 1 e 2 foram conduzidos em aproximadamente 20~m de altitude, insuficientes para que o regime terminal fosse atingido, e o modelo atmosférico adotado é simplificado, com densidade constante e sem representação de vento ou turbulência. Como desdobramentos futuros, pretende-se realizar o Teste 3 em campo com critérios de erro inferiores a $\pm5\%$ em velocidade e $\pm3\%$ em tempo, integrar o simulador Samara PQ ao RocketPy \citep{rocketpy2024} para simulações com perfil atmosférico variável (GFS/ISA) e deriva por vento, recalibrar os coeficientes $C_{D0}$ e $f_{factor}$ a partir dos dados experimentais do Teste 3, e expandir a análise de sensibilidade para incluir os parâmetros $f_{factor}$ e $\beta$.

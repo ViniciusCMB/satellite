@@ -1,8 +1,8 @@
 {
   "generated_at_utc": "2026-09-10T21:07:44Z",
   "launch": {
-    "datetime_local_brt": "2026-09-04T09:00:00-03:00",
-    "datetime_utc": "2026-09-03T12:00:00Z",
+    "datetime_local_brt": "2026-09-04T18:00:00-03:00",
+    "datetime_utc": "2026-09-04T21:00:00Z",
     "latitude": -21.9430528,
     "longitude": -48.9540861,
     "elevation_m": 478,
@@ -13,7 +13,7 @@
   "atmospheric_model": {
     "type": "GFS",
     "gfs_run_date_utc": "2026-09-03",
-    "note": "GFS forecast for 2026-09-04 12:00 UTC. Updated every 6h (00/06/12/18Z)."
+    "note": "Launch time updated to 2026-09-04 18:00 BRT (21:00 UTC). Trajectory KPIs were generated with the 2026-09-03 GFS run and were not re-simulated."
   },
   "ascent": {
     "apogee_m_agl": 969.491408295431,

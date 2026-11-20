@@ -54,7 +54,7 @@ params = dict(
 )
 
 # Coordenadas de lançamento (LASC / Tatuí-SP)
-LAT, LON, ELEV = -21.9430528, -48.9540861, 600
+LAT, LON, ELEV = -21.942472, -48.952111, 478
 
 # Número de iterações Monte Carlo
 N_MC = 1000

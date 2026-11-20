@@ -1,0 +1,16 @@
+{
+    "radius" : 0.053,
+    "mass" : 4.609,
+    "inertia": [0.138192, 0.138192, 0.010436],
+    "center_of_mass_without_motor": 0.834,
+    "coordinate_system_orientation" : "nose_to_tail",
+    "n_aletas" : 4,
+    "root_chord": 0.16,
+    "tip_chord": 0.09,
+    "span": 0.1,
+    "position": 1.50,
+    "cant_angle": 0,
+    "nose_length": 0.33,
+    "nose_type": "Ogive",
+    "nose_position": 0
+}

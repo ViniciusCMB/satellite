@@ -1,5 +1,6 @@
 # PlatformIO build artifacts
 .pio/
+compile_commands.json
 
 # Python
 __pycache__/
@@ -28,6 +29,19 @@ hardware/CDB/~*.lck
 
 # PDFs de artigos (copyright)
 extras/wing-analysis/docs/*.pdf
+
+# Checkpoints de notebooks
+.ipynb_checkpoints/
+
+# Midia e artefatos gerados da apresentacao (nao versionar)
+docs/mission-report/*.mp3
+docs/mission-report/*.pptx
+docs/mission-report/slides/
+docs/mission-report/slides.zip
+docs/mission-report/segments/
+docs/mission-report/segments_en/
+docs/mission-report/test_tab*.pdf
+docs/mission-report/213_Presentation Session Slides.*
 
 *.ini
 

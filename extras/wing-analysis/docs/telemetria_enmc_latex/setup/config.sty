@@ -1,0 +1,266 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% config.sty
+%
+% Estilo personalizado para artigos do ENMC
+%
+% Este arquivo centraliza configurações de:
+%   - pacotes utilizados
+%   - formatação de título e autores
+%   - estilo de seções
+%   - resumo e palavras-chave
+%   - margens e layout da página
+%
+% Objetivo: garantir padronização visual dos artigos.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACOTES UTILIZADOS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Figuras e cores
+\usepackage{graphicx,color}
+
+% Legendas compactas
+\usepackage[small]{caption}
+
+% Pacotes matemáticos
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+% Indenta o primeiro parágrafo após títulos
+\usepackage{indentfirst}
+
+% Fonte Times
+\usepackage{times}
+
+% Codificação UTF-8
+\usepackage[utf8]{inputenc}
+
+% Controle de espaçamento entre linhas
+\usepackage{setspace}
+\singlespacing
+
+% Ferramentas auxiliares para manipulação de comandos
+\usepackage{etoolbox}
+
+% Controle de layout da página
+\usepackage{geometry}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FORMATAÇÃO DO TÍTULO DO ARTIGO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Redefinição completa do comando \maketitle
+% Ajusta posicionamento do título e formatação de autores
+\renewcommand\maketitle{\par
+  \begingroup
+    % Usa símbolos (*, †, ‡...) para notas de rodapé do título
+    \renewcommand\thefootnote{\fnsymbol{footnote}}%
+
+    % Define aparência da marca da nota
+    \def\@makefnmark{\hbox to\z@{$\m@th^{\@thefnmark}$\hss}}%
+
+    % Define o formato do texto da nota
+    \long\def\@makefntext##1{\parindent 1em\noindent
+            \hbox to1.8em{\hss$\m@th^{\@thefnmark}$}##1}%
+
+    % Tratamento para documentos em duas colunas
+    \if@twocolumn
+      \ifnum \col@number=\@ne
+        \@maketitle
+      \else
+        \twocolumn[\@maketitle]%
+      \fi
+    \else
+      % Força nova página antes do título
+      \newpage
+      % Impede figuras no topo da página
+      \global\@topnum\z@
+      \@maketitle
+    \fi
+
+    \thispagestyle{plain}
+    \@thanks
+
+  \endgroup
+
+  % Limpeza de contadores e macros
+  \setcounter{footnote}{0}%
+  \let\thanks\relax
+  \let\maketitle\relax
+  \let\@maketitle\relax
+  \gdef\@thanks{}
+  \gdef\@author{}
+  \gdef\@title{}
+}
+
+% Estrutura visual do bloco de título corrigida para o seu layout original
+\def\@maketitle{%
+  \newpage
+  \null
+  \vspace{-0.68cm}
+  \vskip 0mm
+
+  \begin{center}
+    {\bfseries \@title}
+  \end{center}
+
+  \vskip 3.9bp
+
+  % Seu bloco original injetado direto na estrutura visual (Sem dar erro!)
+  {\rm
+  \noindent \textbf{Diego dos Santos Alves}$^{1}$ - \textnormal{diego.alves@grad.iprj.uerj.br}\\
+  \noindent \textbf{Pedro Henrique Couto Silva}$^{1}$ - \textnormal{pedro.silva@grad.iprj.uerj.br}\\
+  \noindent \textbf{Vinicius Carvalho Monnerat Bandeira}$^{1}$ - \textnormal{vinicius.bandeira@grad.iprj.uerj.br}\\
+  \noindent \textbf{Caio Phelipe Souza De Lima}$^{1}$ - \textnormal{caio.lima@grad.iprj.uerj.br}\\
+  % TODO: adicionar e-mail do João Victor (alinhado com lista oficial LASC)
+  \noindent \textbf{João Victor Domingues Barizon de Mello}$^{1}$\\
+  \noindent \textbf{Pablo Alves Mattos Borges}$^{1}$ - \textnormal{pablo.borges@grad.iprj.uerj.br}\\
+  \noindent \textbf{Angelo Mondaini Calvão}$^{1}$ - \textnormal{oangelo@iprj.uerj.br}\\
+  \noindent \textbf{Eustáquio de Souza Baêta Júnior}$^{2}$ - \textnormal{eustaquio.baeta@eng.uerj.br}\\
+  \noindent \textbf{Letícia dos Santos Aguilera}$^{3}$ - \textnormal{leticia.aguilera@iprj.uerj.br}\\
+  {\small
+  \noindent $^{1}$Universidade do Estado do Rio de Janeiro, Instituto Politécnico -- Nova Friburgo -- RJ\\
+  \noindent $^{2}$Universidade do Estado do Rio de Janeiro, Faculdade de Engenharia, Programa de Pós-Graduação em Engenharia Mecânica -- Rio de Janeiro -- RJ\\
+  \noindent $^{3}$Universidade do Estado do Rio de Janeiro, Instituto Politécnico, Programa de Pós-Graduação em Ciência e Tecnologia de Materiais -- Nova Friburgo -- RJ\par}
+  }
+
+  \vskip 12bp
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FORMATAÇÃO DE SEÇÕES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Largura do rótulo da seção
+\newlength{\seclabelwidth}
+
+% Ajusta alinhamento do número das seções
+\renewcommand{\@seccntformat}[1]{%
+  \settowidth{\seclabelwidth}{\csname the#1\endcsname}%
+  \addtolength{\seclabelwidth}{-0.75cm}%
+  \csname the#1\endcsname\hspace{-\seclabelwidth}
+}
+
+% Profundidade máxima da numeração
+\setcounter{secnumdepth}{2}
+
+% Formato da numeração
+\renewcommand\thesection{\arabic{section}.}
+\renewcommand\thesubsection{\thesection\arabic{subsection}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ESTILO DOS TÍTULOS DE SEÇÃO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand\section{\@startsection
+  {section}            % nome
+  {1}                  % nível
+  {0mm}                % indentação
+  {4.7ex plus 1ex minus .2ex} % espaço antes
+  {2.5ex plus .2ex}           % espaço depois
+  {\reset@font\normalsize\bfseries} % estilo
+}
+
+\renewcommand\subsection{\@startsection
+  {subsection}
+  {2}
+  {0mm}
+  {2.5ex plus 1ex minus .2ex}
+  {2.4ex plus .2ex}
+  {\reset@font\normalsize\bfseries}
+}
+
+\renewcommand\subsubsection{\@startsection
+  {subsubsection}
+  {3}
+  {0mm}
+  {2.5ex plus 1ex minus .2ex}
+  {-6bp} % texto continua na mesma linha
+  {\reset@font\normalsize\bfseries}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% RESUMO E PALAVRAS-CHAVE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ambiente de resumo
+\renewenvironment{abstract}{
+    \noindent
+    {\em \bfseries \abstractname.}
+    \em
+}{
+    \endquotation
+    \vskip 12bp
+}
+
+% Ambiente de palavras-chave
+\newenvironment{keywords}{
+    \noindent
+    {\em \bfseries \keywordsname: }
+    \rm
+}{
+    \endquotation
+    \vskip 12bp
+}
+\addto\captionsenglish{\renewcommand{\keywordsname}{Keywords}}
+\addto\captionsbrazil{\renewcommand{\keywordsname}{Palavras-chave}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CONFIGURAÇÃO DE PÁGINA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Define tamanho do papel
+\special{papersize=21cm,29.7cm}
+
+% Margens do documento
+\geometry{
+    verbose,
+    a4paper,
+    lmargin = 2.5cm,
+    rmargin = 2.5cm,
+    tmargin = 2.5cm,
+    bmargin = 2.5cm,
+    headsep = 1.0cm
+}
+
+% Espaçamento antes das notas de rodapé
+\setlength{\skip\footins}{1cm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CONFIGURAÇÕES OPCIONAIS (DESATIVADAS)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Estas configurações foram mantidas como referência histórica
+% do estilo original.
+
+% \setlength\textwidth{160mm}
+% \setlength\textheight{247mm}
+% \setlength{\oddsidemargin}{-0.4mm}
+% \setlength{\topmargin}{4.8mm}
+% \setlength{\headheight}{29mm}
+% \setlength{\headsep}{0mm}
+\setlength\parindent{0.75cm}
+\setlength\parskip{0mm}
+% \setlength\mathindent{1cm}
+
+% Ajuste de espaçamento em figuras
+% \BeforeBeginEnvironment{figure}{\vskip-2.5ex}
+% \AfterEndEnvironment{figure}{\vskip-2.5ex}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ESTILO DE PÁGINA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Remove cabeçalhos e rodapés
+\pagestyle{empty}
+
+% Título da seção de referências
+\renewcommand\refname{REFERÊNCIAS}

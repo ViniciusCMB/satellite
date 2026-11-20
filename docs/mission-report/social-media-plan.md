@@ -28,7 +28,7 @@ Para garantir consistência e reconhecimento imediato, todos os posts seguirão 
 
 **Ícones:** [Heroicons](https://heroicons.com) (outline, MIT) renderizados na cor de destaque — link/cadeia no post da cadeia de falhas, raio na capa, olho no contexto, calendário na agenda, check/xmark nas comparações.
 
-**Barra inferior de logos (todos os slides, exceto CTA):** linha horizontal em roxo profundo a ~94% da altura, com os 3 logos: Serra Rocketry (esquerda, versão branca), mission patch (centro) e logo LASC 2026 (direita). Assets em `docs/mission-report/assets/`.
+**Barra inferior de logos (todos os slides, exceto CTA):** linha horizontal em roxo profundo a ~94% da altura, com os 3 logos: Serra Rocketry (esquerda, versão branca), mission patch (centro) e logo LASC 2026 (direita). Assets em `docs/assets/` (`mission_patch.png`, `lasc_logo.png`).
 
 **Última página (CTA):** mission patch e logo LASC lado a lado na base, abaixo do QR code do repo.
 
@@ -114,7 +114,7 @@ MISSÃO HELIKE - #213
 | **24/08** | Seg | LinkedIn   | O satélite que se recupera sozinho (conceito do SRAB)             | “E se a recuperação não tivesse como falhar?”                                               |
 | **25/08** | Ter | LinkedIn   | O que é um PocketQube 1P (50 × 50 × 50 mm)                         | “Um satélite inteiro dentro de um cubo de 5 cm.”                                            |
 | **26/08** | Qua | Instagram  | A biologia por trás: sementes de samara + LEV                      | “A natureza resolveu a queda estável há milhões de anos. A gente só copiou.”                |
-| **27/08** | Qui | Instagram  | Da semente ao código: SRAB → modelo BEM/LEV → firmware ESP32-C3    | “A natureza inventou, a gente escreveu como equação, a equação virou C++.”                  |
+**27/08** | Qua | Instagram  | Da semente ao código: SRAB → modelo BEM/LEV → simulação Samara_PQ (samara_pq_simulation.py)    | “A natureza inventou, a gente escreveu como equação, a equação virou código.”
 | **28/08** | Sex | Instagram  | O TIME: quem construiu o Helike                                    | “Quem fez o Helike?”                                                                        |
 | **29/08** | Sáb | LinkedIn   | Simulamos o voo inteiro: pipeline RocketPy + ODE própria           | “Não existe add_autorotating_wing() no RocketPy. Então a gente escreveu uma.”               |
 | **30/08** | Dom | Instagram  | COUNTDOWN: o dia do lançamento                                     | “04/09 o Helike sobe no Dédalo. Acompanhe ao vivo — e veja a simulação atualizando sozinha a cada 6h.” _(data confirmada)_ |
@@ -351,34 +351,48 @@ _(Carrossel com identidade visual padrão. Post técnico mas LEVE: mostra o cami
 1. **Capa:** título “DE UMA SAMARA A UM SATÉLITE” / subtítulo “NATUREZA → EQUAÇÃO → CÓDIGO”.
 2. **O conceito:** foto/render da asa ao lado de uma samara real: “centro de peso numa ponta, sustentação na outra → gira estável ao cair”. Destaque em `#907ABF`: “girando, a asa gera sustentação extra — é isso que segura a queda”.
 3. **A iteração:** Asa1 → Asa2 → Asa3 (fotos lado a lado) + um número por asa (7.68 → 8.04 → 12.90 m/s). Mensagem: “cada queda de drone gerava dados; cada dado gerava a próxima asa”.
-4. **O código:** screenshot real do firmware em card escuro estilo editor — **sem callouts densos**, só 2 destaques simples: “1 loop, 5 medições por segundo” · “se travar, o chip reinicia sozinho”. Legenda: “esse código voa dentro de 5 × 5 × 5 cm”.
+4. **O código:** pseudocódigo estilizado da simulação em card escuro estilo editor — **sem callouts densos**, só 2 destaques simples: “integrada passo a passo, milhares de vezes por segundo” · “cada força da natureza vira um termo”. Legenda: “a equação que descreve a semente roda até o pouso” _(base: `samara_pq_simulation.py`, extras/wing-analysis)_.
 5. **CTA:** “O resultado? O satélite desce girando a ~470 RPM até pousar. Amanhã: quem construiu.”
 
 > **Regra deste post:** zero equações legíveis, zero jargão de API. Quem quiser a profundidade encontra no repo (link na bio) e no post de sábado no LinkedIn.
 
 ### Caption Instagram
 
-> Como você transforma uma semente de bordo em software de voo? A gente escreveu a física da rotação como código C++ num chip de R$ 30 — um loop simples que mede tudo 5 vezes por segundo e se reinicia sozinho se travar. Três gerações de asas depois, simulação e hardware concordam. Amanhã: o time por trás disso.
+> Como você transforma uma semente de bordo em equação? A gente escreveu a física da autorrotação como código: cada força do voo virou um termo, cada estado da descida virou uma linha, e o computador integra tudo passo a passo até o pouso. Três gerações de asas depois, a simulação e os testes de queda concordam. Amanhã: o time por trás disso.
 >
-> · #Helike213 #LASC2026 #SerraRocketry #PocketQube #SRAB #ESP32 #Embedded
+> · #Helike213 #LASC2026 #SerraRocketry #PocketQube #SRAB #Python #ComputationalFluidDynamics
 
 ---
 
 # Sexta-feira, 28/08 — “O TIME” → **Instagram**
 
-_(Carrossel com identidade visual padrão; fotos reais dos membros em cards com borda laranja — placeholder de asset até ter as fotos.)_
+_(Carrossel com identidade visual padrão. Post focado na estrutura de liderança exigida pela LASC — Mission Leader + 3 Managers — mais agradecimento geral à equipe estendida. Fotos reais em cards com borda laranja — placeholder de asset até ter as fotos.)_
+
+### Estrutura de liderança (exigência LASC)
+
+| Papel | Quem |
+|---|---|
+| **Mission Leader** | Vinicius Monnerat |
+| **Operations Manager** | João Barizon |
+| **Technology Manager** | Pablo |
+| **Security Manager** | Steffany Ouverney |
 
 ### Carrossel (6 slides)
 
-1. **Capa:** título “QUEM FEZ O HELIKE?” / subtítulo “O TIME POR TRÁS DO PROJETO”.
-2. **Slide por área de atuação (3 slides):** estrutura e SRAB · eletrônica e firmware · simulação e documentação — cada um com nome + função _(preencher nomes: Vinicius, João Victor, Pablo, Pedro Henrique, Caio Phelipe, Diego)_.
-3. **Slide “Como começou”:** time universitário (IPRJ-UERJ), autofinanciado, aprendendo fazendo.
-4. **Slide de bastidor:** uma foto real de bancada/teste de drop com drone.
-5. **CTA:** “Quer ver esse cubo caindo e girando? Siga — lançamento dia 04/09.”
+1. **Capa:** título “QUEM FEZ O HELIKE?” / subtítulo “QUATRO POSTOS, UMA EQUIPE”.
+2. **O organograma:** 4 cards (grade 2×2 ou linha), um por papel — foto + nome + breve descrição:
+   - **Vinicius Monnerat — Mission Leader:** visão da missão, SRAB e decisões técnicas de último nível.
+   - **João Barizon — Operations Manager:** operação, testes e coordenação — do banco de testes à rampa.
+   - **Pablo — Technology Manager:** arquitetura eletrônica, PCBs e miniaturização do 1P.
+   - **Steffany Ouverney — Security Manager:** análise de riscos, FMECA e compliance de segurança.
+3. **E a equipe inteira:** “um satélite não se constrói a quatro” — agradecimento aos demais que desenvolveram o Helike: Gabriel (telemetria/ground station), Heitor (mecânica), Lorena (software), Felipe, Júlia e todo o time da Serra Rocketry. Foto coletiva em card _(placeholder)_.
+4. **Slide “Como começou”:** time universitário (IPRJ-UERJ), autofinanciado, aprendendo fazendo.
+5. **Slide de bastidor:** uma foto real de bancada/teste de drop com drone.
+6. **CTA:** “Quer ver esse cubo caindo e girando? Siga — lançamento dia 04/09.”
 
 ### Caption Instagram
 
-> O Helike #213 foi construído por seis pessoas da Serra Rocketry (IPRJ-UERJ), dividindo estrutura, eletrônica, firmware, simulação e muitos testes de queda com drone. Lançamento no LASC 2026, dia 04/09.
+> O Helike #213 tem uma estrutura de liderança de quatro postos: Vinicius na liderança da missão, Barizon na operação, Pablo na tecnologia e Steffany na segurança. Mas nenhum satélite voa com quatro pessoas — essa semana inteira foi construída por um time inteiro da Serra Rocketry (IPRJ-UERJ), dividindo estrutura, eletrônica, firmware, simulação e muitos testes de queda com drone. Obrigado a cada um. Lançamento no LASC 2026, dia 04/09.
 >
 > · #Helike213 #LASC2026 #SerraRocketry #PocketQube #SRAB
 
@@ -468,7 +482,7 @@ Resultado prático p/ o post: a landing page (link na bio) tem um **countdown ao
 | **Seg (24/08)**  | `Helike_complete_assy_render.JPG`, `fig_srab_vs_parachute.png`                 | Card com borda laranja; cadeia de 4 elos como cards com o do meio riscado em `#F28749`            |
 | **Ter (25/08)**  | `Helike_complete_assy_render.JPG`, `1P_ALBA_ORBITAL_frame_p1.png`              | Ambos em cards com borda laranja; frame 1P pode ter destaque em `#907ABF` nas dimensões          |
 | **Qua (26/08)**  | `Asa2_dxf_p1.png`, `fig_test2_geometry.png`                                    | Cards com borda laranja; destacar área +12% em `#907ABF` e setas de tendência                    |
-| **Qui (27/08)**  | Fotos Asa1/Asa2/Asa3 + screenshot real de código (`src/` ou `lib/calc/`) + foto bancada ESP32 _(placeholder)_ | Código em card escuro estilo editor, callouts em `#907ABF`           |
+| **Qui (27/08)**  | Fotos Asa1/Asa2/Asa3 + pseudocódigo da simulação (`extras/wing-analysis/src/samara_pq_simulation.py`) em card escuro estilo editor _(placeholder)_ | Código em card escuro estilo editor, callouts em `#907ABF`           |
 | **Sex (28/08)**  | Fotos reais dos 6 membros + foto de bancada/drop _(placeholder até ter fotos)_ | Cards com borda laranja individuais; nome + função em branco                                     |
 | **Sáb (29/08)**  | `fig_full_trajectory.png`, `fig_mc_sensitivity.png`, `Asa3.DXF` (render CAD)   | Cards com borda laranja; diagrama de 3 estágios com setas em `#F28749`, números em `#907ABF`     |
 | **Dom (30/08)**  | `Helike_complete_assy_render.JPG` ou render do deployer                        | Card com borda laranja; data gigante em `#907ABF` na capa                                         |

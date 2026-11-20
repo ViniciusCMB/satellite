@@ -13,6 +13,7 @@
 #define FILESYSTEM_MODULE_H
 
 #include <Arduino.h>
+#include <FS.h>
 #include "config.h"
 
 /**
@@ -82,6 +83,8 @@ private:
     StorageType _storage_type = STORAGE_NONE;  // SD primary, LittleFS secondary
     bool        _initialized = false;
     uint8_t     _sd_fail_count = 0;            // falhas consecutivas de escrita no SD
+    File        _log;                          // arquivo de telemetria mantido aberto
+    String      _log_path = "/telemetry.csv";
 
     // Numero de falhas seguidas de appendLine() antes de degradar p/ LittleFS
     static const uint8_t SD_MAX_FAILS = 5;
@@ -91,6 +94,9 @@ private:
 
     // LittleFS-related
     bool setupLittleFS();
+
+    // Degrada o armazenamento de SD para LittleFS apos falhas consecutivas
+    void degradeToLittleFS();
 };
 
 #endif // FILESYSTEM_MODULE_H

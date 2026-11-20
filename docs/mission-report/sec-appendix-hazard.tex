@@ -1,76 +1,48 @@
-\textbf{\hfill\break
-}
-
-\textbf{Hazard Analysis Appendix}
+\section*{Hazard Analysis Appendix}
 
 The following hazards were identified and mitigated by design and/or
 process, covering personnel safety during integration, launch and
-recovery operations:
+recovery operations. The complete hazard analysis is presented in
+Table~\ref{tab:hazards}:
 
-\subsection{Hazard 1 — Battery thermal runaway}
+\vspace{0.3cm}
 
-\begin{itemize}
-\item \textbf{Phase:} Flight.
-\item \textbf{Assessment:} A Li-Ion cell can enter thermal runaway
-  under overcharge, overdischarge, short-circuit or overcurrent
-  conditions, potentially damaging the payload or the launch vehicle.
-\item \textbf{Mitigation (design):} BMS with multiple protections
-  (overcharge, overdischarge, short-circuit, overcurrent); battery
-  cell cycle testing before integration.
-\item \textbf{Mitigation (process):} battery charged only with
-  approved charger, monitored during pre-launch operations; RBF pin
-  cuts all energy during integration and transport.
-\end{itemize}
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+% \tabularx exige a largura total (\textwidth) e usa a coluna do tipo 'X' para autoajuste
+\begin{tabularx}{\textwidth}{p{3.5cm} X X} 
+\toprule
+\textbf{Hazard ID \& Title} & \textbf{Design Mitigation} & \textbf{Process Mitigation} \\
+\midrule
 
-\subsection{Hazard 2 — Stored energy during integration}
+\textbf{Hazard 1} \newline Battery thermal runaway &
+BMS with multiple protections covering overcharge, overdischarge, short-circuit, and overcurrent conditions. &
+Cells cycle-tested before integration. Battery charged only with approved charger, monitored during pre-launch, and RBF pin cuts all energy during transport. \\
+\addlinespace
 
-\begin{itemize}
-\item \textbf{Phase:} Integration and pre-launch.
-\item \textbf{Assessment:} a satellite that is accidentally powered
-  while inside the deployer can transmit RF, heat up or actuate
-  unexpectedly during handling.
-\item \textbf{Mitigation (design):} 2 independent kill switches
-  (SW1/SW2) in series with the power rail keep the satellite fully
-  powered off during integration; RBF pin (SW3) cuts all energy.
-\item \textbf{Mitigation (process):} pre-integration verification
-  procedure checks kill switch activation; RBF removed only after the
-  satellite is installed in the deployer.
-\end{itemize}
+\textbf{Hazard 2} \newline Stored energy during integration &
+Two independent mechanical kill switches (SW1/SW2) wired in parallel (NC) on main power line. RBF pin (SW3) in series cuts all energy when inserted. &
+Pre-integration verification procedure checks kill switch activation. RBF removed only after installation in the deployer. \\
+\addlinespace
 
-\subsection{Hazard 3 — Sharp edges of SRAB wings}
+\textbf{Hazard 3} \newline Sharp edges of SRAB wings &
+Final geometry features rounded leading edges. &
+Team wears handling gloves during integration. Recovery team briefed on wing handling. \\
+\addlinespace
 
-\begin{itemize}
-\item \textbf{Phase:} Integration and recovery.
-\item \textbf{Assessment:} ABS wing edges can cause cuts during
-  handling or during the recovery of the landed satellite.
-\item \textbf{Mitigation (design):} rounded leading edges on the
-  final geometry; wing covers (stowed) during integration.
-\item \textbf{Mitigation (process):} handling gloves during
-  integration; recovery team briefed on wing handling.
-\end{itemize}
+\textbf{Hazard 4} \newline RF interference with other teams &
+Dedicated packet protocol with team ID, a reserved 915~MHz channel, and local storage for full data backup. &
+Coordinated frequency allocation during operations. \\
+\addlinespace
 
-\subsection{Hazard 4 — RF interference with other teams}
+\textbf{Hazard 5} \newline Uncontrolled descent &
+Passive deployment with no actuators, two-wing configuration for predictable recovery, keeping nominal impact energy low (17.8~J). &
+Validated through three iterative simulation-and-test campaigns. \\
 
-\begin{itemize}
-\item \textbf{Phase:} Flight (telemetry).
-\item \textbf{Assessment:} Simultaneous LoRa transmissions from other
-  teams on adjacent channels can degrade the telemetry link.
-\item \textbf{Mitigation (design):} dedicated packet protocol with
-  team ID; 915 MHz channel reservation; local storage as data backup
-  (LoRa is support, not mission).
-\end{itemize}
-
-\subsection{Hazard 5 — Uncontrolled descent}
-
-\begin{itemize}
-\item \textbf{Phase:} Recovery.
-\item \textbf{Assessment:} In the event of SRAB deployment failure,
-  the satellite would descend ballistically, with impact energy
-  sufficient to damage property or persons.
-\item \textbf{Mitigation (design):} passive deployment with no
-  actuators (validated in 2 drop-test campaigns); geometric
-  redundancy (4 wings); impact energy within LASC limits in the
-  nominal case.
-\item \textbf{Mitigation (process):} launch site clearance per LASC
-  rules; recovery team positioned per the simulated impact point.
-\end{itemize}
+\bottomrule
+\end{tabularx}
+\caption{Hazard analysis and mitigations.}
+\label{tab:hazards}
+\end{table}

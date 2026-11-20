@@ -1,19 +1,18 @@
-\textbf{\hfill\break
-}
-
-\textbf{Risk Assessment Appendix}
+\section*{Risk Assessment Appendix}
 
 Risk is quantified as $R = P \times S$, where $P$ is the failure
 probability (1--3) and $S$ the severity (1--3). Failure modes are
 organized by mission phase, following the ConOps defined in
-Section 2.
+Section 2. The failure modes are ranked in the FMECA matrix
+(Table~\ref{tab:fmeca}):
 
 \subsection{Risk Matrix (FMECA)}
 
-\begin{center}
-{\small
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.5cm}>{\raggedright\arraybackslash}p{6.2cm}>{\raggedright\arraybackslash}p{1.8cm}cccc}
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{c p{5cm} l c c c l}
 \toprule
 \textbf{\#} & \textbf{Failure Mode} & \textbf{Phase} & \textbf{P} & \textbf{S} & \textbf{R} & \textbf{Level} \\
 \midrule
@@ -29,29 +28,31 @@ Section 2.
 10 & SRAB works but satellite lands in inaccessible area & Recovery & 1 & 2 & 2 & Low \\
 \bottomrule
 \end{tabular}
-}
-\end{center}
+\caption{Failure Mode, Effects, and Criticality Analysis (FMECA).}
+\label{tab:fmeca}
+
+\end{table}
 
 \subsection{Mitigations}
 
 \begin{enumerate}
-\item \textbf{SRAB deployment failure (Critical):} passive design
+\item \textbf{SRAB deployment failure (Critical):} Passive design
   with no hinges; drop tests \#1 and \#2 validated deployment; 4 wings
-  provide geometric redundancy — loss of one wing degrades performance
+  provide geometric redundancy --- loss of one wing degrades performance
   but does not prevent recovery.
 \item \textbf{Battery thermal runaway:} BMS with multiple protections;
   cell cycle testing.
 \item \textbf{RBF pin:} RBF circuit in series with the main power
   rail.
-\item \textbf{LoRa loss:} local storage (SD) preserves all flight
+\item \textbf{LoRa loss:} Local storage (SD) preserves all flight
   data; LoRa is support, not mission.
-\item \textbf{SD failure:} automatic LittleFS fallback on internal
+\item \textbf{SD failure:} Automatic LittleFS fallback on internal
   flash.
-\item \textbf{Structural break:} ABS 3D-printed, walls $\geq$1.2 mm;
+\item \textbf{Structural break:} ABS 3D-printed, walls $\geq$ 1.2~mm;
   load analysis.
 \item \textbf{Kill switch:} 2 independent kill switches + pre-integration
   verification.
-\item \textbf{RF interference:} dedicated team ID protocol; 915 MHz
+\item \textbf{RF interference:} Dedicated team ID protocol; 915~MHz
   channel reservation.
 \item \textbf{GPS failure:} LoRa RSSI triangulation as backup; visual
   search.

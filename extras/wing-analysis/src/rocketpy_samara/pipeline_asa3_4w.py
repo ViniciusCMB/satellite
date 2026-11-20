@@ -40,7 +40,7 @@ params = dict(
     safety_factor=1.5,
 )
 
-LAT, LON, ELEV = -21.9430528, -48.9540861, 600
+LAT, LON, ELEV = -21.942472, -48.952111, 478
 OUT = _SRC.parent.parent / "results"
 OUT.mkdir(parents=True, exist_ok=True)
 

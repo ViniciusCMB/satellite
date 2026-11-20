@@ -86,12 +86,12 @@ void TelemetryModule::formatPacket(const SensorData &data, char *packet, size_t 
     float pressao_hpa = isnan(data.pressao) ? NAN : data.pressao / 100.0f;
 
     snprintf(packet, packetSize,
-             "%s,%lu,%lu,"
+             "%s,%lu,%lu,"                 // TEAM_ID already contains leading '#'
              "%.2f,%.2f,%.2f,%.2f,"
              "%.2f,%.2f,%.2f,"
              "%.2f,%.2f,%.2f,"
              "%.2f,%.6f,%.6f,%u,"
-             "%d#",                         // '#' = end-of-packet marker for receiver validation
+             "%d#",                         // trailing '#' = end-of-packet marker
              TEAM_ID, data.millis_ts, _packetCount,
               data.altura, data.temperatura, data.umidade, pressao_hpa,
               data.gx, data.gy, data.gz,

@@ -12,6 +12,7 @@ A simulacao e re-rodada com GFS mais recente para essa data/hora.
 Uso:
     python export_landing_data.py
 """
+
 from __future__ import annotations
 
 import json
@@ -19,6 +20,7 @@ import sys
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 warnings.filterwarnings("ignore")
 
@@ -27,17 +29,20 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 NB_DIR = SCRIPT_DIR.parent / "notebooks"
 WING_SRC = SCRIPT_DIR.parent / "src"
 GEOMETRY = SCRIPT_DIR.parent / "geometry"
+# Referencial de simulacao: dedalo_rocketpy/ (mesma base dos notebooks)
+DEDALO_DIR = SCRIPT_DIR.parent.parent.parent / "dedalo_rocketpy"
 OUT_DIR = SCRIPT_DIR.parent.parent.parent / "docs" / "landing" / "data"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 sys.path.insert(0, str(WING_SRC))
 
 # Launch parameters (LASC 2026, Helike mission #213)
-LAT = -21.9430528
-LON = -48.9540861
+LAT = -21.942472
+LON = -48.952111
 ELEV = 478
-LAUNCH_LOCAL_STR = "2026-09-04T09:00:00-03:00"
-LAUNCH_UTC = datetime(2026, 9, 3, 12, 0, 0, tzinfo=timezone.utc)
+LAUNCH_LOCAL = datetime(2026, 9, 4, 18, 0, tzinfo=ZoneInfo("America/Sao_Paulo"))
+LAUNCH_UTC = LAUNCH_LOCAL.astimezone(timezone.utc)
+LAUNCH_LOCAL_STR = LAUNCH_LOCAL.isoformat()
 
 RAIL_LENGTH = 4.0
 INCLINATION = 85
@@ -79,17 +84,17 @@ def extract_vehicle_info(motor, rocket_full, rocket_empty, ascent) -> dict:
     total_impulse = prop(motor, "total_impulse")
     burn_time = prop(motor, "burn_time")
     avg_thrust = (
-        round(total_impulse / burn_time, 1)
-        if total_impulse and burn_time
-        else None
+        round(total_impulse / burn_time, 1) if total_impulse and burn_time else None
     )
     motor_info = {
         "total_impulse_n_s": round(total_impulse, 1) if total_impulse else None,
         "avg_thrust_n": avg_thrust,
         "burn_time_s": round(burn_time, 2) if burn_time else None,
-        "propellant_mass_g": round(prop(motor, "propellant_initial_mass") * 1000)
-        if prop(motor, "propellant_initial_mass")
-        else None,
+        "propellant_mass_g": (
+            round(prop(motor, "propellant_initial_mass") * 1000)
+            if prop(motor, "propellant_initial_mass")
+            else None
+        ),
     }
 
     liftoff_mass = prop(rocket_full, "mass")
@@ -129,7 +134,7 @@ def load_environment():
     from rocketpy import Environment
 
     env = Environment(latitude=LAT, longitude=LON, elevation=ELEV)
-    env.set_date(LAUNCH_UTC)
+    env.set_date(LAUNCH_LOCAL)
     env.set_atmospheric_model(type="Forecast", file="GFS")
     return env
 
@@ -165,7 +170,7 @@ def load_motor():
 def build_rocket(motor, with_payload: bool):
     from rocketpy import Rocket
 
-    with open(NB_DIR / "dedalo_data.json") as f:
+    with open(DEDALO_DIR / "dedalo_data.json") as f:
         cfg = json.load(f)
 
     mass = cfg["mass"] + (PAYLOAD_MASS if with_payload else 0.0)
@@ -213,6 +218,7 @@ def build_rocket(motor, with_payload: bool):
 
 def run_ascent(env, rocket_full):
     from rocketpy import Flight
+
     return Flight(
         rocket=rocket_full,
         environment=env,
@@ -226,6 +232,7 @@ def run_ascent(env, rocket_full):
 
 def run_parachute_descent(env, rocket_empty, ascent):
     from rocketpy import Flight
+
     return Flight(
         rocket=rocket_empty,
         environment=env,
@@ -270,9 +277,12 @@ def downsample(t, x, y, z, max_points=200):
 def compute_impact_zone(parachute_xy, srab_xy, landing_uncert_m=200):
     """Impact ellipse: combines parachute point + SRAB + GFS uncertainty."""
     import numpy as np
+
     pts = np.array([parachute_xy, srab_xy])
     cx, cy = pts.mean(axis=0)
-    semi_a = max(np.linalg.norm(pts[0] - pts[1]) / 2 + landing_uncert_m, landing_uncert_m)
+    semi_a = max(
+        np.linalg.norm(pts[0] - pts[1]) / 2 + landing_uncert_m, landing_uncert_m
+    )
     semi_b = landing_uncert_m
     return {
         "center_x_m": float(cx),
@@ -287,7 +297,7 @@ def main():
     import numpy as np
 
     print(f"[{now_utc_iso()}] Starting landing page export...")
-    print(f"  Target launch: {LAUNCH_LOCAL_STR} (12:00 UTC)")
+    print(f"  Target launch: {LAUNCH_LOCAL_STR} ({LAUNCH_UTC.strftime('%H:%M UTC')})")
 
     print("[1/6] Loading Environment (GFS forecast)...")
     env = load_environment()
@@ -302,13 +312,17 @@ def main():
     apogee_agl = float(ascent.apogee - env.elevation)
     apogee_asl = float(ascent.apogee)
     apogee_time = float(ascent.apogee_time)
-    print(f"      Apogee: {apogee_agl:.0f} m AGL / {apogee_asl:.0f} m ASL @ t={apogee_time:.1f}s")
+    print(
+        f"      Apogee: {apogee_agl:.0f} m AGL / {apogee_asl:.0f} m ASL @ t={apogee_time:.1f}s"
+    )
 
     print("[4/6] Parachute descent (Stage 2)...")
     parachute = run_parachute_descent(env, rocket_empty, ascent)
     parachute_impact = (float(parachute.x_impact), float(parachute.y_impact))
     parachute_time = float(parachute.t_final)
-    print(f"      Parachute impact: ({parachute_impact[0]:.1f}, {parachute_impact[1]:.1f}) m @ t={parachute_time:.1f}s")
+    print(
+        f"      Parachute impact: ({parachute_impact[0]:.1f}, {parachute_impact[1]:.1f}) m @ t={parachute_time:.1f}s"
+    )
 
     print("[5/6] SRAB descent (Stage 3)...")
     srab, srab_sol = run_srab(env, ascent)
@@ -317,7 +331,9 @@ def main():
     srab_v_impact = float(srab_sol.v_impact)
     srab_spin_rpm = float(srab_sol.spin_impact_rpm)
     srab_drift = float(np.hypot(*srab_impact))
-    print(f"      SRAB impact: ({srab_impact[0]:.1f}, {srab_impact[1]:.1f}) m, |v|={srab_v_impact:.2f} m/s")
+    print(
+        f"      SRAB impact: ({srab_impact[0]:.1f}, {srab_impact[1]:.1f}) m, |v|={srab_v_impact:.2f} m/s"
+    )
 
     print("[6/6] Generating JSON/GeoJSON artifacts...")
 
@@ -350,7 +366,9 @@ def main():
     z_srab = np.array(srab_sol.altitude)
     x_srab = np.array(srab_sol.x)
     y_srab = np.array(srab_sol.y)
-    t_srab_ds, x_srab_ds, y_srab_ds, z_srab_ds = downsample(t_srab, x_srab, y_srab, z_srab, max_points=200)
+    t_srab_ds, x_srab_ds, y_srab_ds, z_srab_ds = downsample(
+        t_srab, x_srab, y_srab, z_srab, max_points=200
+    )
 
     # Main JSON (KPIs)
     landing = {
@@ -368,7 +386,7 @@ def main():
         "atmospheric_model": {
             "type": "GFS",
             "gfs_run_date_utc": LAUNCH_UTC.strftime("%Y-%m-%d"),
-            "note": "GFS forecast for 2026-09-04 12:00 UTC. Updated every 6h (00/06/12/18Z).",
+            "note": f"GFS forecast for {LAUNCH_UTC.strftime('%Y-%m-%d %H:%M')} UTC. Updated every 6h (00/06/12/18Z).",
         },
         "ascent": {
             "apogee_m_agl": apogee_agl,
@@ -448,15 +466,24 @@ def main():
         "features": [
             {
                 "type": "Feature",
-                "properties": {"name": "Ascent (Stage 1)", "color": "#ff6b35", "stage": "ascent"},
+                "properties": {
+                    "name": "Ascent (Stage 1)",
+                    "color": "#ff6b35",
+                    "stage": "ascent",
+                },
                 "geometry": {
                     "type": "LineString",
-                    "coordinates": [[LON, LAT]] + [to_lonlat(x, y) for x, y in zip(x_asc, y_asc)],
+                    "coordinates": [[LON, LAT]]
+                    + [to_lonlat(x, y) for x, y in zip(x_asc, y_asc)],
                 },
             },
             {
                 "type": "Feature",
-                "properties": {"name": "Parachute descent (Stage 2)", "color": "#3498db", "stage": "parachute"},
+                "properties": {
+                    "name": "Parachute descent (Stage 2)",
+                    "color": "#3498db",
+                    "stage": "parachute",
+                },
                 "geometry": {
                     "type": "LineString",
                     "coordinates": [to_lonlat(x, y) for x, y in zip(x_par, y_par)],
@@ -464,16 +491,25 @@ def main():
             },
             {
                 "type": "Feature",
-                "properties": {"name": "SRAB descent (Stage 3)", "color": "#9b59b6", "stage": "srab"},
+                "properties": {
+                    "name": "SRAB descent (Stage 3)",
+                    "color": "#9b59b6",
+                    "stage": "srab",
+                },
                 "geometry": {
                     "type": "LineString",
-                    "coordinates": [to_lonlat(x, y) for x, y in zip(x_srab_ds, y_srab_ds)],
+                    "coordinates": [
+                        to_lonlat(x, y) for x, y in zip(x_srab_ds, y_srab_ds)
+                    ],
                 },
             },
             {
                 "type": "Feature",
                 "properties": {"name": "Estimated impact zone", "stage": "impact"},
-                "geometry": {"type": "Point", "coordinates": [float(impact_lon), float(impact_lat)]},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [float(impact_lon), float(impact_lat)],
+                },
             },
             {
                 "type": "Feature",

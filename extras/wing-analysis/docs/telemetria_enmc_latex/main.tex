@@ -1,0 +1,190 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Template de Artigo
+% XXIX ENMC – Encontro Nacional de Modelagem Computacional
+% XVII ECTM – Encontro de Ciência e Tecnologia de Materiais
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt,fleqn]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CONFIGURAÇÃO DE IDIOMA E CODIFICAÇÃO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PACOTES DO TEMPLATE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{setup/config}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{wallpaper}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\setlength{\headheight}{20.68497pt}
+\addtolength{\topmargin}{-8.68497pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DIRETÓRIO DAS FIGURAS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{figures/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AJUSTE DE ESPAÇAMENTO NA BIBLIOGRAFIA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\let\OLDthebibliography\thebibliography
+\renewcommand\thebibliography[1]{%
+\OLDthebibliography{#1}
+\setlength{\parskip}{0pt}
+\setlength{\itemsep}{0pt plus 0.3ex}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TÍTULO DO ARTIGO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{SISTEMA DE RECUPERAÇÃO AUTO ROTATIVO BIOINSPIRADO (SRAB) PARA NANOSSATÉLITE POCKETQUBE 1P: FUNDAMENTAÇÃO, MODELAGEM, VALIDAÇÃO EXPERIMENTAL PRELIMINAR E SIMULAÇÃO COMPUTACIONAL}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% AUTORES E AFILIAÇÕES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Diego dos Santos Alves, et al.}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% RODAPÉ ESPECIAL DA PRIMEIRA PÁGINA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\fancypagestyle{firstpagestyle}
+{
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyfoot[C]{
+\footnotesize
+\parbox{15cm}{
+\centering
+\fontsize{7.5}{0}\selectfont\it
+XXIX ENMC -- Encontro Nacional de Modelagem Computacional\\
+XVII ECTM -- Encontro de Ciência e Tecnologia de Materiais\\
+06 a 09 de outubro de 2026 - Bento Gonçalves - RS
+}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INÍCIO DO DOCUMENTO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\pretolerance=10000
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LOGO DO EVENTO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}
+\centering
+\includegraphics[width=6.25in]{logo.png}
+\end{figure}
+
+\vspace{-3cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TÍTULO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\maketitle
+
+\pagestyle{empty}
+\thispagestyle{firstpagestyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% RESUMO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{abstract}
+A recuperação de nanossatélites PocketQube 1P depende tradicionalmente de paraquedas, que apresentam pontos únicos de falha como erros de dobradura, costura ou corrosão. Este trabalho propõe o Sistema de Recuperação Auto Rotativo Bioinspirado (SRAB), baseado no mecanismo de autorrotação passiva observado em sementes de samara (\textit{Acer rubrum}, \textit{Fraxinus}). O sistema utiliza arquitetura estrutural assimétrica que induz rotação cônica sem atuação ativa, gerando um Vórtice de Bordo de Ataque (LEV) que reduz a velocidade terminal. A validação emprega modelo dinâmico de quarta ordem (Newton-Euler reduzido) acoplado à Teoria do Elemento de Pá (BEM), implementado no simulador Samara PQ em Python, e ensaios experimentais de queda livre qualitativos com dois protótipos iterativos (Testes 1 e 2). A simulação computacional da configuração Asa3.DXF com 4 asas (Teste 3 -- Parte A) resultou em velocidade de impacto de 12,90~m/s, conicidade de equilíbrio de 17,22$^\circ$ e spin de 372~RPM. Análise de dispersão por Monte Carlo (200 iterações) indicou velocidade de impacto de 12,89~$\pm$~0,20~m/s (P95~=~13,19~m/s). A instrumentação embarcada (ESP32-C3, ICM-20602, BMP280, LoRa RFM95W) foi validada funcionalmente em 20~Hz.
+\end{abstract}
+
+\begin{keywords}
+Recuperação passiva, samara, PocketQube, autorrotação, Monte Carlo
+\end{keywords}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CABEÇALHO DAS DEMAIS PÁGINAS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\fancyhead[L]{\footnotesize{\fontsize{7.5}{0}\selectfont\it
+XXIX ENMC, XVII ECTM\\
+06 a 09 de outubro de 2026}}
+
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyfoot[C]{
+\footnotesize
+\parbox{15cm}{
+\centering
+\fontsize{7.5}{0}\selectfont\it
+XXIX ENMC -- Encontro Nacional de Modelagem Computacional\\
+XVII ECTM -- Encontro de Ciência e Tecnologia de Materiais\\
+06 a 09 de outubro de 2026 - Bento Gonçalves - RS
+}}
+
+\rhead{}
+
+\pagestyle{fancy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SEÇÕES DO ARTIGO
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{sec-introducao}  % §1 Introdução + §2 Fundamentação Teórica
+\input{sec-metodologia}  % §3 Materiais e Métodos
+\input{sec-resultados}  % §4 Resultados e Discussão
+\input{sec-conclusoes}  % §5 Conclusões
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFERÊNCIAS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{apalike}
+\fontsize{11}{0}\selectfont
+\bibliography{bib/references}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TRADUÇÃO PARA INGLÊS (EXIGÊNCIA DO TEMPLATE)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\vspace{0.5cm}
+
+\selectlanguage{english}
+
+\vspace{0.2cm}
+
+\noindent {\centering \bfseries BIOINSPIRED AUTOROTATIVE RECOVERY SYSTEM (SRAB) FOR POCKETQUBE 1P NANOSATELLITE: FOUNDATIONS, MODELING, PRELIMINARY EXPERIMENTAL VALIDATION AND COMPUTATIONAL SIMULATION \par}
+
+\vspace{0.5cm}
+
+\begin{abstract}
+The recovery of PocketQube 1P nanosatellites traditionally relies on parachutes, which present single points of failure such as folding errors, stitching defects or corrosion. This work proposes the Bioinspired Autorotative Recovery System (SRAB), based on the passive autorotation mechanism observed in samara seeds (\textit{Acer rubrum}, \textit{Fraxinus}). The system employs an asymmetric structural architecture that induces conical rotation without active actuation, generating a Leading-Edge Vortex (LEV) that reduces terminal velocity. Validation uses a fourth-order dynamic model (reduced Newton-Euler) coupled with Blade Element Theory (BEM), implemented in the Samara PQ simulator in Python, and qualitative free-fall experiments with two iterative prototypes (Tests 1 and 2). Computational simulation of the Asa3.DXF configuration with 4 wings (Test 3 -- Part A) resulted in impact velocity of 12.90~m/s, equilibrium conicity of 17.22$^\circ$ and spin of 372~RPM. Monte Carlo dispersion analysis (200 iterations) indicated impact velocity of 12.89~$\pm$~0.20~m/s (P95~=~13.19~m/s). The embedded instrumentation (ESP32-C3, ICM-20602, BMP280, LoRa RFM95W) was functionally validated at 20~Hz.
+\end{abstract}
+
+\begin{keywords}
+Passive recovery, samara, PocketQube, autorotation, Monte Carlo
+\end{keywords}
+
+\selectlanguage{brazil}
+
+\end{document}

@@ -44,6 +44,24 @@ void BuzzerModule::playContinuous(uint16_t duration_ms) {
     digitalWrite(BUZZER_PIN, LOW);
 }
 
+void BuzzerModule::updateHeartbeat(uint32_t now_ms) {
+#if BEEP_HEARTBEAT_ENABLED
+    if (_heartbeat_on) {
+        if (now_ms - _heartbeat_start_ms >= SHORT_MS) {
+            digitalWrite(BUZZER_PIN, LOW);
+            _heartbeat_on = false;
+        }
+    } else if (now_ms - _heartbeat_last_ms >= BEEP_HEARTBEAT_PERIOD_MS) {
+        digitalWrite(BUZZER_PIN, HIGH);
+        _heartbeat_on = true;
+        _heartbeat_start_ms = now_ms;
+        _heartbeat_last_ms = now_ms;
+    }
+#else
+    (void)now_ms;
+#endif
+}
+
 void BuzzerModule::stop() {
     digitalWrite(BUZZER_PIN, LOW);
 }

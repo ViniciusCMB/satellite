@@ -13,6 +13,7 @@
                 "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/LittleFS/src",
                 "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
                 "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/TinyGPSPlus/src",
+                "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit BMP5xx Library/src",
                 "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit BMP280 Library",
                 "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit BME280 Library",
                 "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit Unified Sensor",
@@ -215,6 +216,7 @@
                 "/home/vinicius/.platformio/packages/framework-arduinoespressif32/cores/esp32",
                 "/home/vinicius/.platformio/packages/framework-arduinoespressif32/variants/esp32c3",
                 "/home/vinicius/Documentos/projects/satellite/lib/calc",
+                "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Unity/src",
                 "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                 "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/AsyncUDP/src",
                 "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/BLE/src",
@@ -253,6 +255,7 @@
                     "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/LittleFS/src",
                     "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
                     "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/TinyGPSPlus/src",
+                    "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit BMP5xx Library/src",
                     "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit BMP280 Library",
                     "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit BME280 Library",
                     "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Adafruit Unified Sensor",
@@ -455,6 +458,7 @@
                     "/home/vinicius/.platformio/packages/framework-arduinoespressif32/cores/esp32",
                     "/home/vinicius/.platformio/packages/framework-arduinoespressif32/variants/esp32c3",
                     "/home/vinicius/Documentos/projects/satellite/lib/calc",
+                    "/home/vinicius/Documentos/projects/satellite/.pio/libdeps/helike_esp32c3/Unity/src",
                     "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                     "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/AsyncUDP/src",
                     "/home/vinicius/.platformio/packages/framework-arduinoespressif32/libraries/BLE/src",
@@ -487,7 +491,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=60119",
+                "PLATFORMIO=60200",
                 "ARDUINO_ESP32C3_DEV",
                 "CORE_DEBUG_LEVEL=4",
                 "CONFIG_FREERTOS_UNICORE=1",
@@ -509,6 +513,7 @@
                 "ARDUINO_VARIANT=\"esp32c3\"",
                 "ARDUINO_BOARD=\"Espressif ESP32-C3-DevKitM-1\"",
                 "ARDUINO_PARTITION_default",
+                "UNITY_INCLUDE_CONFIG_H",
                 ""
             ],
             "cStandard": "gnu99",

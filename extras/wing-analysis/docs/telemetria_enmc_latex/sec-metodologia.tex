@@ -1,0 +1,49 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 3. MATERIAIS E MÉTODOS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{MATERIAIS E MÉTODOS}
+
+\subsection{Simulação computacional (Pipeline Samara PQ)}
+
+O simulador Samara PQ, desenvolvido em Python, integra numericamente o modelo dinâmico da Seção 2.4 para reproduzir a trajetória de queda até o impacto. O processo inicia-se com a importação de contornos geométricos de arquivos DXF (biblioteca \texttt{ezdxf}), extraindo-se automaticamente o perfil de corda, a área total e o raio efetivo da asa.
+
+A resolução das equações diferenciais utiliza o método Runge--Kutta de 5$^{\underline{a}}$ ordem (\texttt{solve\_ivp}, RK45, da biblioteca SciPy), selecionado por oferecer controle adaptativo de passo e estabilidade numérica, características essenciais para lidar com a dinâmica multi-escala do SRAB. Ao final, o ambiente exporta os resultados em relatórios numéricos (JSON e TXT) e gera gráficos temporais do comportamento das variáveis de estado, como altitude, velocidade, ângulo de conicidade e rotação.
+
+\subsection{Ensaios experimentais qualitativos (Testes 1 e 2)}
+
+Protótipos físicos montados sob a plataforma Alba Orbital 1P foram submetidos a quedas livres a partir de drone em altitude máxima de aproximadamente 20~m. O primeiro protótipo, Teste 1, utilizou quatro asas com área total de 109,22~cm$^2$ (asa1.dxf), apresentando sustentação detectável embora com desalinhamento estrutural evidente durante a rotação. Com base nas observações do Teste 1, a geometria foi otimizada para o Teste 2, que empregou a Asa2.DXF com 122,28~cm$^2$, um aumento de 12\% na área, e resultou em rotação cônica visualmente mais estável.
+
+A Tabela~\ref{tab:testes12} apresenta os parâmetros de simulação para os Testes 1 e 2.
+
+\begin{table}[h]
+\caption{Parâmetros de simulação computacional para os Testes 1 e 2. Condições: queda de 20~m, massa 200~g, $\beta=8^\circ$, $C_{D0}=1,0$, $f_{factor}=0,3$, $\rho=1,225$~kg/m$^3$.}
+\centering
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccc}
+\hline
+Parâmetro & Teste 1 (Asa1, 4 asas) & Teste 2 (Asa2, 4 asas) & Variação \\
+\hline
+Área Total das Asas [cm$^2$] & 109,22 & 122,28 & +12\% \\
+Velocidade de Impacto [m/s] & 7,68 & 8,04 & +4,7\% \\
+Energia Cinética no Impacto [J] & 5,90 & 6,47 & +9,7\% \\
+Tempo de Voo [s] & 2,79 & 2,70 & $-$3,2\% \\
+Conicidade $\theta$ no Impacto [$^\circ$] & 13,46 & 24,44 & +81,6\% \\
+Taxa de Rotação no Impacto [RPM] & 306,77 & 306,89 & +0,04\% \\
+Número de Reynolds médio & 9\,875 & 13\,876 & +40,5\% \\
+\hline
+\end{tabular*}
+{\footnotesize\centering Fonte: Autores (2026)\par}
+\label{tab:testes12}
+\end{table}
+
+\subsection{Instrumentação embarcada (Teste 3 -- Parte B)}
+
+Projetou-se uma suíte de telemetria com massa total de 15~g, composta por microcontrolador ESP32-C3, IMU ICM-20602 e barômetro BMP280 (ambos com amostragem a 20~Hz), além de transceptor LoRa RFM95W e data logger em memória flash (LittleFS). Um módulo GPS u-blox NEO-8M está previsto para integração futura, com a massa restante (3,5~g) alocada para bateria e suportes.
+
+O firmware realiza leitura simultânea via I2C, cálculo da taxa de descida por derivada numérica, detecção automática de apogeu, filtragem de dados e armazenamento em formato CSV a 20~Hz. A integridade do sistema e a detecção de apogeu foram plenamente validadas em ensaios de bancada sem perda de amostras.
+
+\subsection{Teste 3 -- Protocolo e estrutura}
+
+O Teste 3 consiste na campanha de validação da configuração Asa3.DXF (4 asas), dividida em duas frentes complementares. A Parte A (cujos resultados constam na Seção 4.4) utiliza o simulador Samara PQ para caracterizar o regime estacionário a 1000~m de altitude, incluindo análise de robustez por Monte Carlo. 
+
+A Parte B, que permanece como trabalho futuro, compreende o ensaio de campo com lançamento em altitude operacional e coleta de dados via telemetria (Seção 3.3). Para a validação, os critérios de aceitação estipulam erros máximos em relação às simulações da Parte A de $\pm5\%$ para a velocidade de impacto e $\pm3\%$ para o tempo de voo.

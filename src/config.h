@@ -64,8 +64,25 @@
 // Sample interval (ms) — 200ms = 5Hz
 #define SAMPLE_INTERVAL_MS  200
 
+// Intervalo de gravacao no arquivo de backup (LittleFS/SD). LoRa transmite
+// a 5Hz; o log grava a 1Hz para preservar a flash interna (ver main loop).
+#define FS_LOG_INTERVAL_MS  1000
+
 // LoRa transmission interval (ms) — same as sample rate
 #define LORA_INTERVAL_MS    200
+
+// Jitter aleatorio (±ms) aplicado ao intervalo de TX — reduz colisao com o
+// foguete (#51) que transmite no mesmo canal/sync word a ~5Hz. Com ±40ms de
+// jitter e pacote de ~50ms no ar, a fracao de colisoes cai proporcionalmente
+// ao intervalo.
+#define LORA_JITTER_MS      40
+
+// Beep de localizacao em solo (1Hz) — desligado por padrao em voo.
+// Habilite na recuperacao: -D BEEP_HEARTBEAT_ENABLED=1
+#ifndef BEEP_HEARTBEAT_ENABLED
+#define BEEP_HEARTBEAT_ENABLED 0
+#endif
+#define BEEP_HEARTBEAT_PERIOD_MS 1000
 
 // GPS read interval (ms)
 #define GPS_READ_INTERVAL_MS 1000

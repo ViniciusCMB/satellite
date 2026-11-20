@@ -1,17 +1,12 @@
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{0}
-\item
-  \textbf{Introduction}
-\end{enumerate}
+\section{Introduction}
 
 \subsection{Mission Overview and Motivation}
 
-Team Serra Rocketry, based at the Instituto Politécnico of UERJ
+Team Serra Rocketry, based at the Instituto Politécnico
 (IPRJ-UERJ), is developing the Helike \#213 1P PocketQube for the
 Satellite Challenge category of the 7th Latin American Space Challenge
-(LASC 2026), to be launched in September 2026. The mission carries the
-weight of two previous participations in the competition and the
+(LASC 2026). The mission carries the
+weight of two previous missions in the competition and the
 determination not to repeat the mistakes that cost the team everything.
 
 For the team, LASC is not an end in itself but the means: the flight
@@ -30,26 +25,50 @@ At LASC 2025, Serra Rocketry flew two missions: the SR Couto rocket
 (\#100) and the SR Coutinho satellite (\#261). Both were built with
 self-funded resources, unique components, and no redundancy. One day
 before launch, the onboard electronics began to fail — a burned BMP and
-an unstable LoRa link. With no redundancy and no backup, the official
-RocketPy simulation predicted exactly 1001~m of apogee under real local
-conditions; the flight was spectacular and reached the prediction, but
+an unstable LoRa link. With no redundancy and no backup;
+the flight was spectacular but
 communication was lost, the parachute did not deploy, and the flight
-ended ballistic. Both payloads were lost.
+ended ballistic. Both rocket and payload were lost.
 
 The lesson crystallized: \emph{optimization without redundancy is a
 trap}. The Helike is the materialization of this lesson.
 
+\subsection{Form Factor Selection: Why a 1P PocketQube?}
+
+Among the form factors available to university satellite teams, the
+Helike mission deliberately selects the PocketQube 1P standard
+(50$\times$50$\times$50~mm, $\sim$200~g) over the two common
+alternatives: CanSats and CubeSats. A CanSat offers no standardized
+deployment envelope and no heritage in the deployer ecosystem, and its
+size and mass do not exercise the recovery problem that defines this
+mission. A 1U CubeSat (10$\times$10$\times$10~cm, $\sim$1~kg), at the
+opposite extreme, would consume a disproportionate share of the
+Dédalo launch vehicle payload allocation, leaving little room for the
+recovery validation that is the core of the mission. The 1P
+PocketQube sits at the right point of the trade-off: the smallest
+standardized satellite form factor, with a $\sim$200~g mass that fits
+comfortably within the 800~g payload class of the Dédalo rocket.
+
+The choice was enabled by a direct donation from Alba Orbital,
+received at LASC 2025: a flight-grade 1P frame consisting of an
+aluminum structure with a fiber-reinforced polymer (FRP) backplate.
+The aluminum structure provides the rigidity required to survive
+launch vibration and the ejection shock at the lowest mass compatible
+with the 50~mm envelope, while the non-conductive FRP backplate
+provides an isolated mounting surface for the electronics stack,
+simplifying the electrical design. By removing the need to develop
+and qualify a mechanical structure in-house, the donation allowed the
+team to concentrate development effort on the SRAB --- the subsystem
+that defines the mission.
+
 \subsection{The Problem with Conventional Parachutes}
 
 The LASC 2025 experience only confirmed that the parachute is a
-critical failure point in miniaturized satellites: a conventional
-parachute depends on a chain of events: a
+critical failure point: a conventional parachute depends on a chain of events: a
 sequencer decides when to open, an actuator (servo or pyrotechnics)
 fires, and enough energy must be available at exactly the right
 moment. Break any link in that chain and the parachute never opens,
-which means total loss. The mechanism also eats volume that a 50~mm
-cube simply does not have, the lines risk entanglement, and an
-asymmetric canopy can put the satellite into an unstable rotation.
+which means total loss.
 
 \subsection{The SRAB Solution}
 
@@ -64,22 +83,21 @@ physics does the work, not a decision made in software. Because the
 descent is governed by rigid-body dynamics, the behavior is
 predictable and modelable. And the wings stay stowed during flight,
 deploying passively at ejection, so the whole mechanism fits inside
-the PocketQube envelope.
+the deployer envelope.
 
 \subsection{Bioinspired Innovation}
 
 The SRAB is based on a mechanism that nature has refined over millions
 of years: the \textbf{autorotation of samara seeds} (\emph{Acer
-rubrum}, maple seeds) [1,2]. These seeds evolved an asymmetric geometry
+rubrum}, maple seeds) [\ref{ref1},\ref{ref2}]. These seeds evolved an asymmetric geometry
 where the center of mass sits at one end and the aerodynamic lift at
 the other, inducing stable conical rotation during fall. The
 Leading-Edge Vortex (LEV) generated by the rotation doubles the
-effective lift [1], resulting in very low descent velocities for the
+effective lift [\ref{ref1}], resulting in very low descent velocities for the
 mass of the object.
 
 Adapting this biological solution to aerospace engineering for
-PocketQubes --- an approach rooted in the mathematical modelling of
-animal flight [3] --- is a step toward simpler, more reliable, and more
+PocketQubes is a step toward simpler, more reliable, and more
 elegant missions.
 
 \subsection{Design Philosophy: The Three-Filter Review}
@@ -91,7 +109,7 @@ schedule discipline directly to the code and hardware being built:
 \subsubsection{Filter 1 — Compliance (SCSM LASC 2026)}
 
 Every design decision is checked against the Satellite Challenge
-Standards Manual (SCSM, Edition 7, Revision 1) [4]. Compliance is
+Standards Manual (SCSM, Edition 7, Revision 1) [\ref{ref5}]. Compliance is
 organized in four themes. \emph{Electrical isolation} comes first: two
 independent mechanical kill switches (SW1/SW2, NC contacts wired in
 parallel, Z axis) keep the satellite powered off during integration inside the deployer, meeting
@@ -100,16 +118,14 @@ rail, cuts all energy when inserted and is removed only after
 integration (ECS 9.1.5--9.1.7). The satellite has no fixed electrical
 connection to the launch vehicle (REC 10.1.1); it powers on at ejection
 and starts telemetry immediately. \emph{Energy} follows: the power
-budget (Section 3) predicts about 9~h of autonomy against the ECS 9.1.3
-requirement of at least 4~h --- a margin of more than two times --- with
+budget (Section 3) predicts about 8~h of autonomy against the ECS 9.1.3
+requirement of at least 4~h --- a margin of two times --- with
 a bench test at 20\% margin as the remaining evidence.
 \emph{Recovery} is the heart of the mission: because the SRAB is a
 non-parachute recovery system, REC 10.2.1 requires that LASC be
-notified; the notification was sent on 19 April 2026, although
-formalization through the official channels is still pending.
+notified; the notification was sent on First Progress Update.
 Finally, \emph{spectrum}: LoRa runs at 915~MHz, the legal Americas
-band in Brazil (ECS 9.2.4), with verification of the specific
-authorization in progress.
+band in Brazil (ECS 9.2.4).
 
 \subsubsection{Filter 2 — Murphy (What Can Go Wrong)}
 
@@ -119,13 +135,12 @@ failure, and the design attacks it from two sides. Physically, the
 system is passive with no hinges to jam, and three drop-test campaigns
 validated deployment (Section 4). In firmware, the strategy is the opposite of
 complexity: the flight software runs a single synchronous polling loop
-that samples, validates and transmits at 5~Hz, with no state machine
-and no RTOS scheduler, and a hardware watchdog (TWDT, 5~s) resets the
-system if the loop ever stalls. Energy failure is covered by a robust
+that samples, validates and transmits at 5~Hz and a hardware watchdog 
+(TWDT, 5~s) resets the system if the loop ever stalls.
+Energy failure is covered by a robust
 BMS with overcharge, overdischarge, short-circuit and overcurrent
-protection, backed by an autonomy margin test. Data are protected twice
-over: if LoRa is lost, the SD card preserves every byte of flight data
---- LoRa is support, not mission --- and if the SD card itself fails,
+protection. Data are protected twice over: if LoRa is lost, 
+the SD card preserves every byte of flight data and if the SD card itself fails,
 the firmware falls back to LittleFS on the internal flash. Because the
 LoRa link is transmit-only, there is no uplink or in-flight command
 path; recovery never depends on a software decision.
@@ -133,64 +148,59 @@ path; recovery never depends on a software decision.
 \subsubsection{Filter 3 — Timeline (Deadlines)}
 
 The schedule is enforced through milestone-driven development with the
-LASC progress updates as hard gates: 1st (19 Apr), 2nd (03 May), Pitch
-Video (31 May), 3rd (28 Jun), 4th (26 Jul) and the competition in
+LASC progress updates as hard gates and the competition in
 September 2026. Every deliverable is mapped to an owner and an
 evidence artifact (video, log, bench test) so that the filter reviews
 are data-driven rather than opinion-driven.
-
-Three trade-offs are consciously open. The autonomy bench test (20\%
-margin) is scheduled for September, trading early measurement for
-final hardware. The physical validation of the kill switches is
-deferred to the integration rehearsal, since the deployer interface is
-the only representative environment. And the quantitative drop test of
-the final Asa3 two-wing configuration (Test 4, $\sim$200~m) is planned
-before the Launch Readiness Review, trading an earlier, less
-representative campaign for one that exercises the actual flight
-configuration.
 
 \subsection{Mission Objectives}
 
 \subsubsection{Primary Objective — SRAB Validation}
 
 Demonstrate that the SRAB is a viable recovery mechanism for 1P
-PocketQubes, with a predictable terminal velocity meeting the LASC
-20~m/s limit with a 1.5 safety factor, and no critical single points
-of failure.
+PocketQubes, with a predictable terminal velocity and no single critical failure points
+.
 
 \subsubsection{Secondary Objective — Post-Landing Location}
 
-Use LoRa RSSI trilateration (3 ground beacons) + GPS to locate the
+Use LoRa RSSI trilateration (3 ground beacons) to locate the
 satellite on the ground after landing, complementing SRAB recovery.
 
 \subsubsection{Support Objective — Flight Telemetry}
 
 Collect flight data (pressure, temperature, acceleration, rotation,
-GPS position) and transmit at 5~Hz via LoRa, supporting the mission by
+GPS position) and transmit via LoRa, supporting the mission by
 documenting the descent and validating the SRAB model.
 
 \subsection{Project Specifications}
 
-\begin{center}
+The principal design specifications of the Helike \#213 are
+summarized in Table~\ref{tab:specs}.
+
+\begin{table}[htbp]
+\centering
 {\small
 \setlength{\tabcolsep}{6pt}
-\begin{tabularx}{\linewidth}{>{\raggedright}p{5.2cm}X}
+\begin{tabular}{>{\raggedright}p{5.2cm}l}
 \toprule
-\textbf{Parameter} & \textbf{Specification} \\
+\textbf{Parameter} & \textbf{Value} \\
 \midrule
 Form factor & PocketQube 1P (50$\times$50$\times$50~mm) \\
-Recovery & SRAB --- 2 autorotative wings (passive, non-parachute) \\
-Terminal velocity (predicted, final Asa3) & 13.33~m/s ($V_F = 20/1.5$~m/s target, FS 1.5) \\
+Recovery & SRAB --- 2 wings, passive, non-parachute \\
+Terminal velocity (predicted) & 13.33~m/s ($V_F = 20$~m/s target, SF 1.5) \\
 Microcontroller & ESP32-C3 Super Mini (single-core RISC-V) \\
 Communication & LoRa RFM95W, 915~MHz, SF7, 125~kHz bandwidth, 20~dBm, sync 0xF3, CRC enabled \\
-Telemetry rate & 5~Hz (200~ms cadence) \\
+Telemetry rate & 5~Hz \\
 Navigation & GPS NEO-8M \\
 Sensors & BME280 (pressure/temp/humidity) + ICM-20602 (6-axis IMU) \\
 Storage & SD card + LittleFS fallback \\
 Safety & 2 kill switches + RBF pin \\
 Battery & Li-Ion 1300~mAh \\
-Autonomy & $>$5~h (margin $\approx 2\times$) \\
+Autonomy & $\approx$8~h (margin $\approx 2\times$) \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
+\caption{Project specifications.}
+\label{tab:specs}
+
 }
-\end{center}
+\end{table}

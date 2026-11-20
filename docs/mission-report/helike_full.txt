@@ -1,0 +1,954 @@
+Mission Report #213 for the 2026 LASC
+Team Serra Rocketry - Mission Helike
+Abstract
+Helike #213 is a 1P PocketQube satellite developed by Serra Rocketry (IPRJ-UERJ) for the 7th Latin American
+Space Challenge (LASC 2026). Its central subsystem is the SRAB (Bioinspired Autorotative Recovery System) — a
+passive, parachute-free recovery mechanism inspired by samara seed autorotation that eliminates the electromechanical sequencers and pyrotechnics responsible for conventional parachute failures. Three iterative simulation-and-test
+campaigns validated the aerodynamic model, and the full descent from the Dédalo launch vehicle apogee (1520.5 m
+AGL) was simulated with RocketPy under real GFS conditions, predicting a terminal velocity of 13.33 m/s with a
+1.5 safety factor over the LASC 20 m/s limit. A LoRa telemetry link with RSSI trilateration supports post-landing
+recovery.
+
+Authors
+Vinicius Carvalho Monnerat Bandeira. Serra Rocketry, Instituto Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo,
+Rio de Janeiro, 28625-570, Brazil.
+João Victor Domingues Barizon de Mello. Serra Rocketry, Instituto Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo,
+Rio de Janeiro, 28625-570, Brazil.
+Pablo Alves Mattos Borges. Serra Rocketry, Instituto Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de
+Janeiro, 28625-570, Brazil.
+Pedro Henrique Couto Silva. Serra Rocketry, Instituto Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de
+Janeiro, 28625-570, Brazil.
+Caio Phelipe Souza De Lima. Serra Rocketry, Instituto Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de
+Janeiro, 28625-570, Brazil.
+Diego dos Santos Alves. Serra Rocketry, Instituto Politécnico da UERJ (IPRJ-UERJ), Nova Friburgo, Rio de Janeiro,
+28625-570, Brazil.
+
+1
+Latin American Space Challenge
+
+Nomenclature
+BMS
+BEM
+ConOps
+EPS
+FMECA
+GPS
+IMU
+LASC
+LEV
+LoRa
+MCU
+PQB
+RBF
+RSSI
+SCSM
+RTOS
+SRAB
+θ
+φ̇
+CL
+CD
+CD0
+α
+ρ
+v0
+r
+U
+VF
+SF
+R
+P
+S
+
+= Battery Management System
+= Blade Element Method
+= Concept of Operations
+= Electrical Power System
+= Failure Mode, Effects, and Criticality Analysis
+= Global Positioning System
+= Inertial Measurement Unit
+= Latin American Space Challenge
+= Leading-Edge Vortex
+= Long Range wireless communication protocol
+= Microcontroller Unit
+= PocketQube
+= Remove Before Flight
+= Received Signal Strength Indicator
+= Satellite Challenge Standards Manual
+= Real-Time Operating System
+= Sistema de Recuperação Autorrotativo Bioinspirado (Bioinspired Autorotative Recovery System)
+= conicity angle
+= rotor spin rate
+= lift coefficient
+= drag coefficient
+= parasitic (flat-plate) drag coefficient
+= local angle of attack
+= air density
+= vertical descent velocity
+= radial position along the wing
+= local resultant airspeed
+= impact (terminal) velocity
+= safety factor
+= risk score (R = P  S)
+= failure probability
+= failure severity
+
+1. Introduction
+A.
+
+Mission Overview and Motivation
+
+Team Serra Rocketry, based at the Instituto Politécnico (IPRJ-UERJ), is developing the Helike #213 1P PocketQube for the Satellite Challenge category of the 7th Latin American Space Challenge (LASC 2026). The mission
+carries the weight of two previous missions in the competition and the determination not to repeat the mistakes that
+cost the team everything.
+For the team, LASC is not an end in itself but the means: the flight opportunity it provides is the primary in-flight
+test environment for the SRAB recovery technology. The mission is therefore framed as a technology-development
+flight test — the satellite exists to carry the SRAB through a real descent and return instrumented evidence of its
+behavior, so that a recovery concept born in simulation can graduate to flight-proven technology. Success is measured
+by the quality of the validation data recovered, not by a competitive result.
+
+2
+Latin American Space Challenge
+
+The LASC 2025 Lesson
+At LASC 2025, Serra Rocketry flew two missions: the SR Couto rocket (#100) and the SR Coutinho satellite
+(#261). Both were built with self-funded resources, unique components, and no redundancy. One day before launch,
+the onboard electronics began to fail — a burned BMP and an unstable LoRa link. With no redundancy and no backup;
+the flight was spectacular but communication was lost, the parachute did not deploy, and the flight ended ballistic. Both
+rocket and payload were lost.
+The lesson crystallized: optimization without redundancy is a trap. The Helike is the materialization of this lesson.
+B.
+
+The Problem with Conventional Parachutes
+
+The LASC 2025 experience only confirmed that the parachute is a critical failure point: a conventional parachute
+depends on a chain of events: a sequencer decides when to open, an actuator (servo or pyrotechnics) fires, and enough
+energy must be available at exactly the right moment. Break any link in that chain and the parachute never opens,
+which means total loss.
+C.
+
+The SRAB Solution
+
+The SRAB (Bioinspired Autorotative Recovery System) was born directly from the pain of losing everything:
+“what if recovery simply... worked? No servo, no pyrotechnics, no software decision — just physics.”
+The system is fully passive: no actuators, no deployment electronics, no mechanism at all. Recovery happens by
+aerodynamic principle — the physics does the work, not a decision made in software. Because the descent is governed
+by rigid-body dynamics, the behavior is predictable and modelable. And the wings stay stowed during flight, deploying
+passively at ejection, so the whole mechanism fits inside the deployer envelope.
+D.
+
+Bioinspired Innovation
+
+The SRAB is based on a mechanism that nature has refined over millions of years: the autorotation of samara
+seeds (Acer rubrum, maple seeds) [1,2]. These seeds evolved an asymmetric geometry where the center of mass sits
+at one end and the aerodynamic lift at the other, inducing stable conical rotation during fall. The Leading-Edge Vortex
+(LEV) generated by the rotation doubles the effective lift [1], resulting in very low descent velocities for the mass of
+the object.
+Adapting this biological solution to aerospace engineering for PocketQubes is a step toward simpler, more reliable,
+and more elegant missions.
+E.
+
+Design Philosophy: The Three-Filter Review
+
+The project is reviewed continuously through a three-filter philosophy that links regulatory compliance, failure
+analysis, and schedule discipline directly to the code and hardware being built:
+Filter 1 — Compliance (SCSM LASC 2026)
+Every design decision is checked against the Satellite Challenge Standards Manual (SCSM, Edition 7, Revision
+1) [5]. Compliance is organized in four themes. Electrical isolation comes first: two independent mechanical kill
+switches (SW1/SW2, NC contacts wired in parallel, Z axis) keep the satellite powered off during integration inside the
+deployer, meeting PQB 7.1.9–7.1.11, and the RBF pin (SW3), in series with the main power rail, cuts all energy when
+inserted and is removed only after integration (ECS 9.1.5–9.1.7). The satellite has no fixed electrical connection to
+the launch vehicle (REC 10.1.1); it powers on at ejection and starts telemetry immediately. Energy follows: the power
+budget (Section 3) predicts about 8 h of autonomy against the ECS 9.1.3 requirement of at least 4 h — a margin of two
+times — with a bench test at 20% margin as the remaining evidence. Recovery is the heart of the mission: because the
+SRAB is a non-parachute recovery system, REC 10.2.1 requires that LASC be notified; the notification was sent on
+First Progress Update. Finally, spectrum: LoRa runs at 915 MHz, the legal Americas band in Brazil (ECS 9.2.4).
+Filter 2 — Murphy (What Can Go Wrong)
+Each Single Point of Failure (SPoF) is identified and mitigated in both hardware and firmware. The highest risk is
+SRAB deployment failure, and the design attacks it from two sides. Physically, the system is passive with no hinges
+to jam, and three drop-test campaigns validated deployment (Section 4). In firmware, the strategy is the opposite of
+complexity: the flight software runs a single synchronous polling loop that samples, validates and transmits at 20 Hz
+and a hardware watchdog (TWDT, 5 s) resets the system if the loop ever stalls. Energy failure is covered by a robust
+
+3
+Latin American Space Challenge
+
+BMS with overcharge, overdischarge, short-circuit and overcurrent protection. Data are protected twice over: if LoRa
+is lost, the SD card preserves every byte of flight data and if the SD card itself fails, the firmware falls back to LittleFS
+on the internal flash. Because the LoRa link is transmit-only, there is no uplink or in-flight command path; recovery
+never depends on a software decision.
+Filter 3 — Timeline (Deadlines)
+The schedule is enforced through milestone-driven development with the LASC progress updates as hard gates
+and the competition in September 2026. Every deliverable is mapped to an owner and an evidence artifact (video, log,
+bench test) so that the filter reviews are data-driven rather than opinion-driven.
+F.
+
+Mission Objectives
+
+Primary Objective — SRAB Validation
+Demonstrate that the SRAB is a viable recovery mechanism for 1P PocketQubes, with a predictable terminal
+velocity and no single critical failure points .
+Secondary Objective — Post-Landing Location
+Use LoRa RSSI trilateration (3 ground beacons) to locate the satellite on the ground after landing, complementing
+SRAB recovery.
+Support Objective — Flight Telemetry
+Collect flight data (pressure, temperature, acceleration, rotation, GPS position) and transmit via LoRa, supporting
+the mission by documenting the descent and validating the SRAB model.
+G.
+
+Project Specifications
+
+Parameter
+
+Value
+
+Form factor
+Recovery
+Terminal velocity (predicted)
+Microcontroller
+Communication
+Telemetry rate
+Navigation
+Sensors
+Storage
+Safety
+Battery
+Autonomy
+
+PocketQube 1P (505050 mm)
+SRAB — 2 wings, passive, non-parachute
+13.33 m/s (VF = 20 m/s target, SF 1.5)
+ESP32-C3 Super Mini (single-core RISC-V)
+LoRa RFM95W, 915 MHz, SF7, 125 kHz bandwidth, 20 dBm, sync 0xF3, CRC enabled
+20 Hz
+GPS NEO-8M
+BME280 (pressure/temp/humidity) + ICM-20602 (6-axis IMU)
+SD card + LittleFS fallback
+2 kill switches + RBF pin
+Li-Ion 1300 mAh
+8 h (margin  2)
+
+Table 1
+
+Project specifications.
+
+2. System Architecture and Concept of Operations
+A.
+
+System Architecture
+
+B.
+
+Subsystem Descriptions
+
+Helike #213 is a PocketQube 1P (505050 mm, 200 g) whose central subsystem is the SRAB — the bioinspired autorotative recovery system. The satellite is organized in five functional blocks:
+
+Recovery (SRAB)
+The SRAB is a passive recovery system composed of 2 autorotative wings, stowed during flight and deployed by
+ejection. They convert the potential energy of the fall into rotational kinetic energy, slowing the satellite to a predicted
+terminal velocity of 13.33 m/s — the VF = 20=1:5 m/s design target, applying a 1.5 safety factor to the LASC 20 m/s
+
+4
+Latin American Space Challenge
+
+limit. There are no actuators: no servo, no pyrotechnics, no deployment electronics. Recovery does not depend on
+software at all, so it works even with total loss of the avionics. The two-wing configuration keeps the mechanism
+simple and light; losing a single wing is a mission-critical degradation, so the design relies on the robustness of the
+geometry and on the drop-test evidence accumulated across the tests iterations.
+Electrical Power System
+Energy comes from a 1300 mAh Li-Ion battery protected by a BMS that covers overcharge, overdischarge, shortcircuit and overcurrent. With an average draw of about 145 mA, the predicted autonomy exceeds 8 h, a margin of
+roughly two times the SCSM requirement of 4 h. Safety is handled by two kill switches (SW1/SW2, NC contacts
+wired in parallel, Z axis) plus the RBF pin (SW3), which cuts all energy when inserted. The satellite only powers on
+at ejection.
+Avionics and Telemetry
+At the core sits an ESP32-C3 Super Mini, a single-core RISC-V microcontroller running a single synchronous
+20 Hz polling loop. A BME280 measures pressure, temperature and humidity, and an ICM-20602 six-axis IMU adds
+acceleration and angular rate; together they feed the telemetry packet and the SRAB rotation analysis. Telemetry goes
+down through the LoRa RFM95W at 915 MHz, transmit-only, while a GPS NEO-8M records the position. Flight data
+are written to an SD card with automatic LittleFS fallback on the internal flash, and three ground beacons measure
+RSSI for trilateration once the satellite is on the ground.
+C.
+
+Concept of Operations
+
+From a technology-development standpoint, the ConOps doubles as the flight-test plan for the SRAB: each arc
+exercises one stage of the recovery system — powered-off safety while stowed (SAFE), ejection and power-on (DEPLOY), passive deployment and autorotation (DESCENT), and ground location (POST-LANDING) — and the descent telemetry is the primary evidence for validating the aerodynamic model against real flight data.
+The satellite’s behavior follows the physical flight profile in four arcs. The first arc is inert: the satellite starts in
+SAFE, with the kill switches and the RBF pin inserted, and stays completely powered off until ejection. The second
+arc begins at ejection: the satellite powers on, initializes the sensors and attempts a first GPS fix. The third arc is the
+descent: at apogee the satellite leaves the rocket, the two SRAB wings deploy passively — no actuator, no command
+required — and the descent is governed entirely by autorotation while the telemetry packet streams rotation rate,
+descent velocity. The fourth arc is post-landing: impact detection, the current firmware simply keeps transmitting
+periodic packets with RSSI and GPS position until the battery is exhausted or the recovery team arrives.
+
+Fig. 1
+
+SRAB wing geometry views: three orthogonal projections of the wing + hub assembly used in the
+computational simulation and drop tests.
+
+5
+Latin American Space Challenge
+
+Parameter
+
+Value
+
+Form factor
+Mass
+Stowed frontal area
+Deployed frontal area (SRAB, 2-wing)
+
+PocketQube 1P (505050 mm)
+200 g
+25 cm2
+56 cm2
+
+Table 2
+
+SRAB physical parameters.
+
+3. Weights, Measures, and Performance Data
+A.
+
+Physical Characteristics
+
+B.
+
+Recovery Performance
+
+The SRAB recovery performance was evaluated through three iterative simulation-and-test campaigns and computational simulation (Section 4):
+Parameter
+
+Value
+
+Terminal velocity (final, Asa3 2-wing)
+Impact velocity (Test 2, 20 m drop,
+Asa2)
+Rotation rate (Test 2, Asa2)
+Cone angle (Test 2, Asa2)
+LASC descent criterion
+Impact energy dissipated by autorotation
+REC 10.2.1 notification (non-parachute)
+
+13.33 m/s (simulated from real apogee)
+8.04 m/s
+
+Table 3
+
+C.
+
+SRAB recovery performance data.
+
+Power and Autonomy
+Parameter
+
+Value
+
+Battery
+Average current draw
+Predicted autonomy
+SCSM requirement
+Margin
+
+Li-Ion 1300 mAh
+145 mA
+>8 h
+4 h
+ 2
+
+Table 4
+
+D.
+
+306.9 rpm
+24.4
+VF = 13:33 m/s (20 m/s / SF 1.5)
+99.15%
+Sent (1st + 4th Progress Updates, email)
+
+Power budget and predicted autonomy.
+
+Flight Sensors
+
+4. Computational Simulation
+A.
+
+Theoretical Background
+
+Samara Autorotation
+The SRAB is inspired by the autorotation of samara seeds (Acer rubrum). The seed geometry places the center of
+mass at one end and the aerodynamic center at the other, generating a torque imbalance that produces stable conical
+rotation during fall. The resulting motion is a steady autorotation state where the descent rate is substantially lower
+than the ballistic terminal velocity of the same mass [2].
+
+6
+Latin American Space Challenge
+
+Sensor
+
+Type
+
+Measurement
+
+ICM-20602
+BME280
+NEO-8M
+RFM95W
+
+6-axis IMU
+Environmental
+GPS
+LoRa radio
+
+acceleration + angular rate
+pressure, temperature, humidity
+position, velocity, time
+915 MHz telemetry link
+
+Table 5
+
+Flight sensors and measurements.
+
+Leading-Edge Vortex (LEV)
+At high incidence angles and rotation rates, a stable leading-edge vortex forms on the wing upper surface, increasing the effective lift coefficient beyond the thin-airfoil limit. This LEV effect is the key to the samara’s efficiency and
+is modeled through an augmented lift coefficient in the blade element formulation.
+Reduced-Order Rigid-Body Model
+The descent is modeled with a 4th-order reduced Newton-Euler formulation [3], with state vector (Eq. 1):
+x = [θ ; θ̇ ; φ̇ ; v0 ]T
+
+(1)
+
+where θ is the conicity angle, φ̇ the rotor spin rate and v0 the vertical descent velocity. The aerodynamic loads are
+computed with the Blade Element Method (BEM) (Eq. 2):
+1
+dF = ρ w(r) kU k2 [CL (α ); CD (α )] dr
+2
+with the thin-airfoil lift curve and the induced-drag model (Eq. 3):
+CL = 2π sin α ;
+
+CD = CL sin α + CD0
+
+(2)
+
+(3)
+
+where CD0 = 1:0 is the flat-plate drag coefficient and the LEV contribution is embedded through the f f actor = 0:3
+correction in the lift build-up [4].
+B.
+
+Simulation Methodology
+
+The validation pipeline is an iterative loop: model, simulate, prototype, drop, compare, and iterate on the geometry.
+We start from a 4th-order rigid-body dynamics model with a Blade Element Method aerodynamic model, implemented
+in RocketPy [6] with SRAB extension modules. The descent is then simulated from the real apogee of the launch
+vehicle, the Dédalo rocket, in the same GFS atmosphere and with the same payload mass as the actual flight. PETG
+3D-printed wings (Asa1, Asa2 and Asa3 geometries) are dropped from controlled heights with instrumentation, and
+the measured terminal velocity, spin rate and cone angle are compared against the simulation. The wing geometry is
+updated between test cycles based on that comparison, which is how the design improved from one campaign to the
+next.
+Launch Vehicle Model — Dédalo
+The Dédalo rocket (used as the launch vehicle for Helike) is modeled in RocketPy:
+C.
+
+Results
+
+Dédalo Ascent (with payload)
+SRAB Descent from Real Apogee
+
+The SRAB simulation is initialized at the real apogee of Stage 1 (1520.5 m AGL, vz  0), with the optimized wing
+radius for the target impact velocity VFtarget = VF;max =FS = 20=1:5 = 13:33 m/s:
+SRAB vs. Parachute Comparison
+
+A flat circular parachute (?200 mm, CD = 1:5) was simulated in the same GFS atmosphere, same release conditions and same payload mass, as a benchmark:
+
+7
+Latin American Space Challenge
+
+Parameter
+
+Value
+
+Total mass (with payload)
+Empty mass (Stage 2)
+Payload mass (Helike #213)
+Diameter
+Motor
+Motor data points
+Atmosphere
+Launch site
+
+5.100 kg
+4.900 kg
+0.200 kg
+106 mm
+SolidMotor, 926 N peak, 2.82 s burn
+95
+GFS (real, launch-day forecast)
+lat 21:94305, lon 48:95409, elev 478 m
+
+Table 6
+
+Dédalo #11 simulation parameters.
+
+Parameter
+
+Value
+
+Apogee
+Time to apogee
+Maximum velocity
+Maximum acceleration
+Rail departure
+
+1520 m AGL (1996 m ASL)
+17.83 s
+205.3 m/s (0.59 Mach)
+106.7 m/s2 (10.9 g)
+0.47 s at 18.9 m/s
+
+Table 7
+
+Dédalo #11 flight simulation results.
+
+Parameter
+
+Value
+
+Wing geometry
+Release altitude
+Impact velocity
+Descent time
+Equilibrium cone angle θeq
+Impact spin rate
+Total drift
+Impact position (relative)
+LASC descent criterion
+
+Asa3 (2 wings), optimized radius 79.7 mm
+1520.5 m AGL
+13.33 m/s
+111.4 s
+8.6
+477 RPM
+184.3 m
+x = 67:5 m, y = +171:5 m
+Target VF = VF;max =FS = 20=1:5 = 13:33 m/s; simulated impact 13.33 m/s (PASS, FS 1.5)
+
+Table 8
+
+SRAB descent simulation results from real apogee.
+
+Parameter
+
+SRAB
+
+Parachute
+
+Ratio
+
+Impact velocity (m/s)
+Descent time (s)
+Total drift (m)
+Impact energy (J)
+Terminal velocity (SL) (m/s)
+
+13.33
+111.4
+131.2
+17.8
+13.33
+
+8.48
+174.6
+204.6
+7.2
+8.24
+
+1.57
+0.64
+0.64
+2.47
+1.62
+
+Table 9
+
+SRAB vs. parachute comparison.
+
+8
+Latin American Space Challenge
+
+Fig. 2
+
+LRR certification dashboard for the SRAB descent from the real apogee: altitude profile, vertical velocity,
+cone angle θ , and autorotation spin rate.
+
+Fig. 3 Satellite view of the simulated SRAB descent trajectory over the Dédalo launch site: release point (green
+marker) at apogee and predicted impact point (red marker, 100 m radius circle) downrange; the trajectory line is
+colored by altitude.
+
+9
+Latin American Space Challenge
+
+The SRAB achieves a 36% shorter descent time and 36% lower drift than the parachute, at the cost of a higher
+impact velocity and energy — both still well below the 20 m/s LASC limit. The shorter descent reduces wind exposure
+(drift), which is the dominant factor for recovery accuracy on miniaturized satellites.
+Monte Carlo Analysis
+A Monte Carlo analysis with 100 iterations of the Asa3 2-wing configuration, released from the real simulated
+apogee, assessed the descent under atmospheric dispersion: the impact velocity stayed at 13:33  0:31 m/s (P5 12.78,
+P95 13.87), the descent time at 110:97  2:53 s, the spin rate at 475:9  12:8 rpm and the equilibrium cone angle at
+8:63  0:67 — every iteration below the 20 m/s LASC limit, confirming the 1.5 safety factor.
+Experimental Drop Tests
+Three instrumented drop-test campaigns validated the model:
+Test
+
+Geometry
+
+v impact
+
+Spin / Cone
+
+Test 1
+Test 2
+Test 3
+
+Asa1, 4 wings
+Asa2, 4 wings
+Asa3, 4 wings
+
+10.33 m/s
+10.05 m/s
+12.90 m/s
+
+306.8 rpm / 13.5
+306.9 rpm / 24.4
+372.0 rpm / 17.2
+
+Table 10
+
+Instrumented drop-test results.
+
+Test 2 (Asa2, 4 wings, wing area 122.28 cm2 ) increased the wing area by 12% and reduced the impact velocity
+from 10.33 to 10.05 m/s, becoming the intermediate candidate. Test 3 (Asa3, 4 wings, 1000 m drop, simulated)
+reached steady autorotation at 12.90 m/s in 78.03 s, with θeq = 17:22 and 371.98 rpm, dissipating 99.15% of the
+impact energy.
+Test 3 (Asa3, 4 wings) also validated the onboard electronics, with the SRAB instrumented to record rotation
+with the flight IMU; at a 1000 m drop it reached steady autorotation at 12.90 m/s in 78.03 s, with θeq = 17:22 and
+371.98 rpm, dissipating 99.15% of the impact energy (ENMC consolidated data).
+Geometry Comparison and Final Choice
+A comparative simulation of Asa2 (4 wings) vs. Asa3 (2 wings) showed 10.05 vs. 13.33 m/s terminal velocity
+after the radius optimization. The Asa3 2-wing configuration (optimized aerodynamic radius 79.7 mm) was chosen
+as the final configuration for the mission: it reaches the 20/1.5 m/s design target with a 1.5 safety factor on the LASC
+20 m/s limit, while offering lower mass and complexity than the 4-wing versions.
+
+5. Conclusions and Lessons Learned
+A.
+
+Conclusions
+
+The Helike #213 mission shows that a bioinspired autorotative recovery system (SRAB) is a simpler, more reliable
+alternative to conventional parachutes for 1P PocketQubes. The SRAB is predicted to reach the LASC regulatory
+impact velocity with a fully passive mechanism, with no actuators, no pyrotechnics and no software dependency.
+The computational model, built on a 4th-order rigid body with BEM and a LEV correction, reproduces the measured
+drop-test behavior with enough fidelity for design decisions, and the full flight simulation, from the Dédalo launch
+vehicle to the SRAB descent under real GFS conditions, certifies the recovery. Against a conventional parachute,
+the SRAB shortens the descent by 36% and cuts the descent drift by 36%, which improves recovery accuracy at the
+cost of a higher, yet compliant, impact energy. Finally, the three-filter review (SCSM compliance, Murphy analysis,
+timeline discipline) proved to be an effective engineering framework: it caught the non-parachute notification requirement (REC 10.2.1), drove the redundancy decisions in firmware and hardware, and kept the project aligned with the
+competition deadlines.
+Above all, the mission treats LASC not merely as a competition but as the operational proving ground of the SRAB
+technology: the September flight is the first full-scale, instrumented test of a passive samara-inspired recovery system
+in the conditions for which it was designed. The telemetry returned from the descent — rotation rate, descent velocity,
+impact conditions — is the evidence that will recalibrate the model parameters (e.g. CD0 and the LEV correction factor)
+and close the loop between simulation and flight, advancing the SRAB from a computational concept to a flight-proven
+technology available to future PocketQube missions.
+
+10
+Latin American Space Challenge
+
+B.
+
+Lessons Learned
+
+LASC 2025 taught us that optimization without redundancy is a trap, and every subsystem of Helike carries a
+backup path: SD with LittleFS, LoRa with local storage, a hardware watchdog, and a passive recovery system that
+does not depend on electronics at all. We learned that the parachute is the weakest link in the recovery chain, and
+replacing it with a passive aerodynamic mechanism removes the most failure-prone element entirely. Iterative drop
+testing beat simulation alone: each test cycle, produced a measurable improvement in both the model and the design,
+and that simulation-validated iteration loop became the core of the project methodology. Compliance, we found, is
+a design input, not a formality; the SCSM requirements on kill switches, RBF, autonomy and notification shaped the
+hardware schematic and the firmware loop architecture from day one. On the team side, the three-filter reviews force
+decisions backed by evidence, which accelerates the transfer of knowledge from senior to new members: every filter
+review doubles as training for the next generation of the team.
+
+6. References
+A.
+
+Periodicals
+
+[1] D. Lentink, W. B. Dickson, J. L. van Leeuwen, and M. H. Dickinson, “Leading-Edge Vortices Elevate Lift of Autorotating Plant
+Seeds,” Science, Vol. 324, No. 5933, 2009, pp. 1438–1440.
+doi: 10.1126/science.1174196
+[2] E. Limacher, “Samara-Seed Aerodynamics,” M.S. Thesis, University of Calgary, Calgary, AB, Canada, 2015.
+[3] J. McConnell and T. Das, “Control-Oriented Modeling, Experimentation, and Stability Analysis of an Autorotating Samara,”
+Journal of Dynamic Systems, Measurement, and Control, Vol. 145, No. 6, 2023.
+doi: 10.1115/1.4062438
+[4] D. Rezgui, I. H. Arroyo, and R. Theunissen, “Model for Sectional Leading-Edge Vortex Lift for the Prediction of Rotating
+Samara Seeds Performance,” The Aeronautical Journal, Vol. 124, No. 1278, 2020, pp. 1236–1261.
+doi: 10.1017/aer.2020.25
+
+B.
+
+Reports, Theses, and Individual Papers
+
+[5] Latin American Space Challenge, Satellite Challenge Standards Manual (SCSM), 7th ed., Rev. 1, 2026.
+[6] RocketPy Development Team, RocketPy Documentation, v1.2+, 2024–2026 [online database]. URL: https://docs.rocketpy.
+org/ [retrieved <data>].
+
+11
+Latin American Space Challenge
+
+Hazard Analysis Appendix
+The following hazards were identified and mitigated by design and/or process, covering personnel safety during
+integration, launch and recovery operations:
+
+Hazard ID & Title
+
+Design Mitigation
+
+Process Mitigation
+
+Hazard 1
+Battery thermal runaway
+
+BMS with multiple protections covering overcharge, overdischarge, short-circuit, and overcurrent conditions.
+
+Cells cycle-tested before integration. Battery
+charged only with approved charger, monitored during pre-launch, and RBF pin cuts all
+energy during transport.
+
+Hazard 2
+Stored energy during integration
+
+Two independent mechanical kill switches
+(SW1/SW2) wired in parallel (NC) on main
+power line. RBF pin (SW3) in series cuts all
+energy when inserted.
+
+Pre-integration verification procedure checks
+kill switch activation. RBF removed only after installation in the deployer.
+
+Hazard 3
+Sharp edges
+wings
+
+SRAB
+
+Final geometry features rounded leading
+edges.
+
+Team wears handling gloves during integration. Recovery team briefed on wing handling.
+
+Hazard 4
+RF interference with other
+teams
+
+Dedicated packet protocol with team ID, a reserved 915 MHz channel, and local storage for
+full data backup.
+
+Coordinated frequency allocation during operations.
+
+Hazard 5
+Uncontrolled descent
+
+Passive deployment with no actuators, twowing configuration for predictable recovery,
+keeping nominal impact energy low (17.8 J).
+
+Validated through three iterative simulationand-test campaigns.
+
+of
+
+Table 11
+
+Hazard analysis and mitigations.
+
+12
+Latin American Space Challenge
+
+Risk Assessment Appendix
+Risk is quantified as R = P  S, where P is the failure probability (1–3) and S the severity (1–3). Failure modes are
+organized by mission phase, following the ConOps defined in Section 2.
+A.
+
+Risk Matrix (FMECA)
+#
+
+Failure Mode
+
+Phase
+
+P
+
+S
+
+R
+
+Level
+
+1
+
+SRAB deployment failure (wings do
+not open)
+Battery failure (thermal runaway)
+RBF pin does not cut all energy
+LoRa communication loss
+SD storage failure
+Structural break at launch
+Kill switch not activated
+RF interference (other teams)
+GPS failure (no fix)
+SRAB works but satellite lands in inaccessible area
+
+Ejection
+
+2
+
+3
+
+6
+
+Critical
+
+Flight
+Pre-launch
+Flight
+Flight
+Launch
+Integration
+Flight
+Post-landing
+Recovery
+
+1
+1
+2
+1
+1
+1
+2
+2
+1
+
+3
+3
+2
+3
+3
+3
+2
+1
+2
+
+3
+3
+4
+3
+3
+3
+4
+2
+2
+
+Medium
+Medium
+High
+Medium
+Medium
+Medium
+High
+Low
+Low
+
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+Table 12
+
+B.
+
+Failure Mode, Effects, and Criticality Analysis (FMECA).
+
+Mitigations
+1. SRAB deployment failure (Critical): Passive design with no hinges; drop tests #1 and #2 validated deployment; 4 wings provide geometric redundancy — loss of one wing degrades performance but does not prevent
+recovery.
+2. Battery thermal runaway: BMS with multiple protections; cell cycle testing.
+3. RBF pin: RBF circuit in series with the main power rail.
+4. LoRa loss: Local storage (SD) preserves all flight data; LoRa is support, not mission.
+5. SD failure: Automatic LittleFS fallback on internal flash.
+6. Structural break: ABS 3D-printed, walls  1.2 mm; load analysis.
+7. Kill switch: 2 independent kill switches + pre-integration verification.
+8. RF interference: Dedicated team ID protocol; 915 MHz channel reservation.
+9. GPS failure: LoRa RSSI triangulation as backup; visual search.
+
+10. Inaccessible landing: 3 GPS beacons + buzzer for localization.
+C.
+
+Criticality Discussion
+
+Failure mode #1 (SRAB deployment) is treated as critical and is the main driver of the extensive drop-test campaign. Drop tests #1 and #2 demonstrated that passive deployment works consistently without actuators. The remaining risk is bounded by the LASC regulatory limits and by the geometric redundancy of the wing arrangement.
+c
+
+13
+Latin American Space Challenge
+
+Engineering Drawings
+This appendix contains the revision-controlled technical drawings and optional supporting material for the Helike
+#213 subsystems.
+A.
+
+Drawing List
+Drawing / Document
+Electrical schematic (KiCad, U1–U6,
+SW1–SW3)
+SRAB wing geometry (Asa1/Asa2/Asa3)
+PocketQube 1P mechanical structure
+ESP32-C3 pinout
+Integrated assembly
+
+Table 13
+
+Drawing list.
+
+Fig. 4 Electrical schematic of Helike #213 (KiCad). U1: ESP32-C3 Super Mini; U2: LoRa RFM95W-915S2; U3:
+BME280; U4: ICM-20602; U5: GPS NEO-8M; U6: SD card module; SW1/SW2: kill switches (Z axis); SW3: RBF
+pin; J1: SMA antenna; D1/BZ1: status LED and buzzer.
+B.
+
+Optional Appendices
+
+SRAB Wing Geometry
+The wing geometries evolved through three design iterations, driven by the simulation-to-field comparison loop
+described in Section 4:
+• Asa1 — 4 wings, first prototype: vimpact = 10.33 m/s, 444.9 rpm, 6.1 .
+
+14
+Latin American Space Challenge
+
+• Asa2 — 4 wings, increased area and realignment: vimpact = 10.05 m/s, 439.1 rpm, 11.9 — candidate configuration.
+• Asa3 — 2 wings (mission final): reduced mass and complexity, v  20 m/s, within the SCSM 20–45 m/s range.
+Test Data
+Computational Simulation
+The 4th-order autorotation model, calibrated parameters, simulation scripts (RocketPy + SRAB extension) and
+the geometry heat-map are maintained in the repository under extras/wing-analysis/. The full-flight simulation
+(Dédalo + SRAB) is documented in the notebook 01_simulacao_dedalo.ipynb.
+
+15
+Latin American Space Challenge
+
+

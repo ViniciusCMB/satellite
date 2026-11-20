@@ -1,104 +1,203 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-\documentclass[
-]{article}
-\usepackage{xcolor}
-\usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-\usepackage{lmodern}
-\usepackage[margin=1in]{geometry}
-\ifPDFTeX\else
-  % xetex/luatex font selection
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[expansion=false]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
+% =====================================================================
+% Mission Report Template — Latin American Space Challenge (LASC)
+% Baseado no "Mission Report Template E02 R01" (estilo AIAA)
+% =====================================================================
+\documentclass[10pt]{article}
+
+% ---------- Fonte e idioma ----------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% NOTA: a opção correta do babel para português do Brasil é "brazilian",
+% não "brazil" ("brazil" não existe e gera erro de compilação). Além
+% disso, este ambiente de compilação não tem os arquivos de idioma
+% "brazilian"/"portuges" do babel instalados (sem acesso à internet para
+% baixá-los). Acentos em PT-BR funcionam normalmente via UTF-8 mesmo
+% assim; só a hifenização automática fica em inglês. Se compilar no
+% Overleaf ou em um TeX Live completo, troque a linha abaixo por:
+%   \usepackage[brazilian,english]{babel}
+\usepackage[english]{babel}
+\usepackage{mathptmx}                 % Times New Roman (texto e matemática)
+
+% ---------- Margens: 1" em todos os lados ----------
+\usepackage[letterpaper,margin=1in]{geometry}
+
+% ---------- Pacotes auxiliares ----------
+\usepackage{titlesec}      % formatação customizada de headings
+\usepackage{fancyhdr}      % rodapé com nome do evento e número de página
 \usepackage{graphicx}
+\usepackage{caption}
+\usepackage{amsmath,amssymb}
+\usepackage{indentfirst}   % indenta a primeira linha de cada parágrafo
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}      % opções definidas em UM ÚNICO \hypersetup, no final do preâmbulo
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{booktabs}
-\setlength{\emergencystretch}{3em}
-\makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
+
+% =====================================================================
+% RODAPÉ: "Latin American Space Challenge" + número de página centralizado
+% =====================================================================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage\\[-2pt]Latin American Space Challenge}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\footskip}{40pt}
+
+% =====================================================================
+% PARÁGRAFOS: sem espaço extra entre eles, apenas indentação
+% =====================================================================
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{1.5em}
+
+% =====================================================================
+% TÍTULO: 18pt, negrito, centralizado
+% =====================================================================
+\newcommand{\ReportTitle}[1]{%
+  \begin{center}
+    {\fontsize{18}{28}\selectfont\bfseries #1}
+  \end{center}
 }
-% Set default figure placement to htbp
-\def\fps@figure{htbp}
+
+% Subtítulo com espaçamento interno menor
+\newcommand{\ReportSubtitle}[1]{%
+  \begin{center}
+    {\fontsize{16}{18}\selectfont #1}
+  \end{center}
+}
+
+
+
+% =====================================================================
+% AUTORES: centralizado, afiliação em itálico
+% =====================================================================
+\newcommand{\ReportAuthor}[2]{%
+  \begin{center}
+    #1\\
+    {\itshape #2}
+  \end{center}
+}
+
+% =====================================================================
+% ABSTRACT: negrito, recuado, separado
+% =====================================================================
+\newenvironment{ReportAbstract}
+  {\vspace{12pt}\begin{quote}\bfseries\noindent}
+  {\end{quote}\vspace{12pt}}
+
+% =====================================================================
+% NOMENCLATURA
+% =====================================================================
+\newenvironment{Nomenclature}
+  {\par\noindent{\bfseries Nomenclature}\par\vspace{4pt}\noindent
+   \begin{tabular}{@{}l @{\ = \ } l@{}}}
+  {\end{tabular}\par\vspace{8pt}}
+
+% =====================================================================
+% QUOTES ESTENDIDAS
+% =====================================================================
+\newenvironment{ExtendedQuote}
+  {\begin{quote}\fontsize{9}{11}\selectfont\noindent}
+  {\end{quote}}
+
+% =====================================================================
+% HEADINGS
+% =====================================================================
+\titleformat{\section}
+  {\normalfont\fontsize{11}{13}\bfseries}{\thesection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+
+\renewcommand{\thesubsection}{\Alph{subsection}}
+\titleformat{\subsection}
+  {\normalfont\bfseries}{\thesubsection.}{2.2em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+\renewcommand{\thesubsubsection}{}
+\titleformat{\subsubsection}
+  {\normalfont\itshape}{}{0pt}{}
+\titlespacing*{\subsubsection}{0pt}{8pt}{4pt}
+
+% =====================================================================
+% LEGENDAS
+% =====================================================================
+\captionsetup[figure]{labelfont=bf,labelsep=quad,justification=centering,font=normalsize,name=Fig.}
+\captionsetup[table]{labelfont=bf,labelsep=quad,justification=centering,font=normalsize}
+
+% =====================================================================
+% APÊNDICES
+% =====================================================================
+\newcommand{\ReportAppendix}[1]{%
+  \clearpage
+  \section*{#1}
+}
+
+% =====================================================================
+% REFERÊNCIAS
+% =====================================================================
+% Novo contador global para as referências não resetarem
+\newcounter{refcount}
+\newcounter{globalrefcount}
+
+% Novo ambiente corrigido para aceitar subseções externas
+\newenvironment{ReportReferences}
+  {\fontsize{9}{11}\selectfont
+   \begin{list}{[\arabic{refcount}]}{%
+     \usecounter{refcount}
+     % Faz o contador local iniciar do valor guardado globalmente
+     \setcounter{refcount}{\value{globalrefcount}}
+     \setlength{\leftmargin}{1.5em}
+     \setlength{\itemsep}{0pt}
+     \setlength{\parsep}{0pt}
+     \setlength{\topsep}{0pt}}}
+  {% Antes de fechar, salva o valor atual para o próximo bloco
+   \setcounter{globalrefcount}{\value{refcount}}
+   \end{list}}
+% =====================================================================
+% \maketitle CUSTOMIZADO
+% Substitui o \maketitle padrão do article para usar o estilo do
+% relatório (24pt negrito centralizado) a partir do \title{} definido
+% mais abaixo. Autores continuam sendo declarados manualmente com
+% \ReportAuthor dentro de sec-frontmatter.tex (não use \author{} para
+% listar pessoas — ele é ignorado por este \maketitle).
+% =====================================================================
+\makeatletter
+\renewcommand{\maketitle}{%
+  \ReportTitle{\@title}%
+  \vspace{6pt}%
+}
 \makeatother
-\ifLuaTeX
-  \usepackage{luacolor}
-  \usepackage[soul]{lua-ul}
-\else
-  \usepackage{soul}
-\fi
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\usepackage{bookmark}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
 
-% --- Heading hierarchy (LASC template: H1/H2 bold, H3 italic, same size) ---
-% The report renders numbered sections and frontmatter/appendices with
-% manual \textbf{...} at \normalsize. Without this fix, native
-% \subsection (default \large) rendered LARGER than its own section.
-\usepackage{sectsty}
-\subsectionfont{\normalsize\bfseries}
-% NOTE: sectsty's article-class \subsection/\subsubsection hard-code
-% \large / \bfseries before the user font, so \normalsize (size) and
-% \mdseries (series) are REQUIRED here to override them — \normalfont
-% does NOT reset the size in this context.
-\subsubsectionfont{\normalsize\mdseries\itshape}
-
+% =====================================================================
+% HYPERREF (final — precisa vir depois de \usepackage{hyperref} acima,
+% mas as opções podem ser setadas aqui)
+% =====================================================================
+% NOTA: um único \hypersetup — a opção "hidelinks" desativa TODAS as
+% cores de link (mesmo que colorlinks=true e as cores estejam setadas),
+% então nunca use as duas juntas. Aqui ficaram os links coloridos
+% (URLs em azul, demais links em preto); se preferir links sem cor
+% nenhuma (aparência "impressa"), troque este bloco por apenas
+% \hypersetup{hidelinks, pdftitle=..., pdfcreator=...}.
 \hypersetup{
+  colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue,
   pdftitle={Team Serra Rocketry - Mission Helike \#213},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
+  pdfcreator={LaTeX}
+}
 
-\title{Team Serra Rocketry - Mission Helike \#213}
+
+% =====================================================================
+% Documento
+% =====================================================================
 \author{}
 \date{}
 
 \begin{document}
-\maketitle
+\ReportTitle{Mission Report \#213 for the 2026 LASC}
+\vspace{-0.5cm} % <-- Esse comando puxa o subtítulo para cima. Ajuste o número se precisar de mais perto.
+\ReportSubtitle{Team Serra Rocketry - Mission Helike}
 
 
-%% ===================================================================
-%% MISSION REPORT - HELIKE #213 - 7th LASC (Serra Rocketry / IPRJ-UERJ)
-%% Template oficial LASC (AIAA style). Seccoes quebradas em sec-*.tex.
-%% Original intacto: main_backup.tex
-%% ===================================================================
 \input{sec-frontmatter}   % Abstract + Authors + Nomenclature
 \input{sec-introduction}  % 1. Introduction
 \input{sec-architecture}  % 2. System Architecture and Concept of Operations
@@ -108,14 +207,14 @@
 \input{sec-references}    % 6. References
 
 % --- Appendices ---
+\clearpage
 \input{sec-appendix-hazard}   % Appendix: Hazard Analysis
+\setcounter{subsection}{0}
+\clearpage
 \input{sec-appendix-risk}     % Appendix: Risk Assessment
+\setcounter{subsection}{0}c
+\clearpage
 \input{sec-appendix-drawings} % Appendix: Engineering Drawings and Optional
-
-% --- Template guidance (NOT part of the final report) ---
-% Instrucoes de formatacao do template LASC, preservadas para consulta:
-%   sec-procedure.tex   (2. Procedure for submission)
-%   sec-guidelines.tex  (3. General Guidelines and Required Elements)
-%   sec-formatting.tex  (4. Detailed Formatting Instructions)
+\setcounter{subsection}{0}
 
 \end{document}

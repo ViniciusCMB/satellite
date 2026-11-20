@@ -1,16 +1,11 @@
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{4}
-\item
-  \textbf{Conclusions and Lessons Learned}
-\end{enumerate}
+\section{Conclusions and Lessons Learned}
 
 \subsection{Conclusions}
 
-The Helike \#213 mission demonstrates that a bioinspired autorotative
-recovery system (SRAB) is a viable, simpler and more robust
+The Helike \#213 mission shows that a bioinspired autorotative
+recovery system (SRAB) is a simpler, more reliable
 alternative to conventional parachutes for 1P PocketQubes. The SRAB
-reaches the LASC regulatory impact velocity with a fully passive
+is predicted to reach the LASC regulatory impact velocity with a fully passive
 mechanism, with no actuators, no pyrotechnics and no software
 dependency. The computational model, built on a 4th-order rigid body
 with BEM and a LEV correction, reproduces the measured drop-test
@@ -18,7 +13,7 @@ behavior with enough fidelity for design decisions, and the full
 flight simulation, from the Dédalo launch vehicle to the SRAB descent
 under real GFS conditions, certifies the recovery. Against a
 conventional parachute, the SRAB shortens the descent by 36\% and cuts
-total drift by 36\%, which improves recovery accuracy at the cost of a
+the descent drift by 36\%, which improves recovery accuracy at the cost of a
 higher, yet compliant, impact energy. Finally, the three-filter review
 (SCSM compliance, Murphy analysis, timeline discipline) proved to be
 an effective engineering framework: it caught the non-parachute
@@ -46,13 +41,12 @@ system that does not depend on electronics at all. We learned that the
 parachute is the weakest link in the recovery chain, and replacing it
 with a passive aerodynamic mechanism removes the most failure-prone
 element entirely. Iterative drop testing beat simulation alone: each
-test cycle, from Asa1 to Asa2 to Asa3, produced a measurable
-improvement in both the model and the design, and that
-simulation-validated iteration loop became the core of the project
+test cycle, produced a measurable improvement in both the model and the design, 
+and that simulation-validated iteration loop became the core of the project
 methodology. Compliance, we found, is a design input, not a formality;
 the SCSM requirements on kill switches, RBF, autonomy and notification
 shaped the hardware schematic and the firmware loop architecture from day one. On
 the team side, the three-filter reviews force decisions backed by
-evidence (videos, logs, bench tests), which accelerates the transfer
+evidence, which accelerates the transfer
 of knowledge from senior to new members: every filter review doubles
 as training for the next generation of the team.
